@@ -1,0 +1,40 @@
+2024-06-15 15:39:02 [scrapy.core.scraper] ERROR: Spider error processing <GET https://hu.wikipedia.org/wiki/Speci%C3%A1lis:Friss_v%C3%A1ltoztat%C3%A1sok> (referer: https://hu.wikipedia.org/wiki/Luther_M%C3%A1rton)
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/clawer/lib/python3.12/site-packages/scrapy/utils/defer.py", line 295, in aiter_errback
+    yield await it.__anext__()
+          ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/clawer/lib/python3.12/site-packages/scrapy/utils/python.py", line 374, in __anext__
+    return await self.data.__anext__()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/clawer/lib/python3.12/site-packages/scrapy/utils/python.py", line 355, in _async_chain
+    async for o in as_async_generator(it):
+  File "/opt/miniconda3/envs/clawer/lib/python3.12/site-packages/scrapy/utils/asyncgen.py", line 14, in as_async_generator
+    async for r in it:
+  File "/opt/miniconda3/envs/clawer/lib/python3.12/site-packages/scrapy/utils/python.py", line 374, in __anext__
+    return await self.data.__anext__()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/clawer/lib/python3.12/site-packages/scrapy/utils/python.py", line 355, in _async_chain
+    async for o in as_async_generator(it):
+  File "/opt/miniconda3/envs/clawer/lib/python3.12/site-packages/scrapy/utils/asyncgen.py", line 14, in as_async_generator
+    async for r in it:
+  File "/opt/miniconda3/envs/clawer/lib/python3.12/site-packages/scrapy/core/spidermw.py", line 118, in process_async
+    async for r in iterable:
+  File "/opt/miniconda3/envs/clawer/lib/python3.12/site-packages/scrapy/spidermiddlewares/referer.py", line 355, in process_spider_output_async
+    async for r in result or ():
+  File "/opt/miniconda3/envs/clawer/lib/python3.12/site-packages/scrapy/core/spidermw.py", line 118, in process_async
+    async for r in iterable:
+  File "/opt/miniconda3/envs/clawer/lib/python3.12/site-packages/scrapy/spidermiddlewares/urllength.py", line 30, in process_spider_output_async
+    async for r in result or ():
+  File "/opt/miniconda3/envs/clawer/lib/python3.12/site-packages/scrapy/core/spidermw.py", line 118, in process_async
+    async for r in iterable:
+  File "/opt/miniconda3/envs/clawer/lib/python3.12/site-packages/scrapy/spidermiddlewares/depth.py", line 35, in process_spider_output_async
+    async for r in result or ():
+  File "/opt/miniconda3/envs/clawer/lib/python3.12/site-packages/scrapy/core/spidermw.py", line 118, in process_async
+    async for r in iterable:
+  File "/opt/miniconda3/envs/clawer/lib/python3.12/site-packages/scrapy/spiders/crawl.py", line 118, in _parse_response
+    cb_res = callback(response, **cb_kwargs) or ()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/dreamerking/python/web-claw/wikiSpider/wikiSpider/spiders/articles.py", line 21, in parse_items
+    last_updated = last_updated.replace('本页面最后修订于', '')
+                   ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'replace'
