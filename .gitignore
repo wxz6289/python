@@ -2,6 +2,10 @@
 .vscode
 .conda
 .venv
+.mypy_cache
+__pycache__
+python/__pycache__
+python/.mypy_cache
 **/**/.ipynb_checkpoints
 **/**/__pycache__
 **/python/test/**
