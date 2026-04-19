@@ -95,9 +95,16 @@ source ml-action/bin/activate
 deactivate
 
 virtualenv ml-action
-source ml-action/bin/activate
 conda deactivate
+
+### 删除 virtualenv 创建的虚拟环境
+
+直接删除虚拟环境所在的目录即可，例如：
+
+```bash
+rm -rf ml-action
 ```
+
 
 ## 4. Anaconda/Miniconda 环境管理
 conda 管理和部署应用、环境和包的工具
@@ -125,7 +132,18 @@ conda remove -n myenv --all
 conda env export > environment.yml
 # 导入环境
 conda env create -f environment.yml
+# 创建新的 conda 虚拟环境
 
+```bash
+# 创建名为 myenv 的新环境，指定 Python 版本
+conda create -n myenv python=3.12  # 截至2026年3月，Python最新稳定版为3.12
+
+# 创建环境并安装指定包
+conda create -n data_env numpy pandas matplotlib
+
+# 激活新环境
+conda activate myenv
+```
 # 查看已安装包
 conda list
 # 查看环境信息
@@ -150,4 +168,3 @@ os.system("printf'\033c'") // linux
 - [venv](https://docs.python.org/zh-cn/3/library/venv.html)
 - [Anaconda](https://www.anaconda.com/download)
 - [Miniconda](https://docs.anaconda.com/free/miniconda/index.html)
-
