@@ -9,3 +9,4 @@ python/.mypy_cache
 **/**/.ipynb_checkpoints
 **/**/__pycache__
 **/python/test/**
+**/**/.env
