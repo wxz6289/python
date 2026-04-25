@@ -9,26 +9,31 @@ pip 是 Python 的包管理工具，用于安装、升级、卸载和管理 Pyth
 ## 1. 安装包
 
 ### 安装最新版本的包
+
 ```bash
 pip install package_name
 ```
 
 ### 安装指定版本
+
 ```bash
 pip install package_name==2.0.0
 ```
 
 ### 安装版本范围
+
 ```bash
 pip install "package_name>=1.0,<2.0"
 ```
 
 ### 升级包
+
 ```bash
 pip install --upgrade package_name
 ```
 
 ### 升级 pip 自身
+
 ```bash
 pip install --upgrade pip
 ```
@@ -42,6 +47,7 @@ pip uninstall package_name
 ```
 
 批量卸载（从文件）：
+
 ```bash
 pip uninstall -r requirements.txt -y
 ```
@@ -51,21 +57,25 @@ pip uninstall -r requirements.txt -y
 ## 3. 查看已安装的包
 
 ### 列出所有已安装的包
+
 ```bash
 pip list
 ```
 
 ### 以requirements格式输出
+
 ```bash
 pip freeze
 ```
 
 ### 查看过期包（可更新的包）
+
 ```bash
 pip list --outdated
 ```
 
 ### 查看某个包的详细信息
+
 ```bash
 pip show package_name
 ```
@@ -75,16 +85,19 @@ pip show package_name
 ## 4. requirements.txt 文件
 
 ### 生成 requirements.txt
+
 ```bash
 pip freeze > requirements.txt
 ```
 
 ### 从 requirements.txt 安装所有依赖
+
 ```bash
 pip install -r requirements.txt
 ```
 
 ### requirements.txt 格式示例
+
 ```
 requests==2.28.1
 numpy>=1.21.0
@@ -100,13 +113,14 @@ flask>=2.0,<3.0
 pip search package_name
 ```
 
-> ⚠️ 注意：PyPI 已禁用 `pip search` 功能，建议使用 https://pypi.org 网站搜索包。
+> ⚠️ 注意：PyPI 已禁用 `pip search` 功能，建议使用 <https://pypi.org> 网站搜索包。
 
 ---
 
 ## 6. 源管理（镜像源）
 
 ### 临时使用镜像源安装包
+
 ```bash
 pip install package_name -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
@@ -116,16 +130,19 @@ pip install package_name -i https://pypi.tuna.tsinghua.edu.cn/simple
 创建或编辑配置文件：
 
 **macOS/Linux:**
+
 ```bash
 ~/.pip/pip.conf
 ```
 
 **Windows:**
+
 ```
 %APPDATA%\pip\pip.ini
 ```
 
 配置内容：
+
 ```ini
 [global]
 index-url = https://pypi.tuna.tsinghua.edu.cn/simple
@@ -133,6 +150,7 @@ trusted-host = pypi.tuna.tsinghua.edu.cn
 ```
 
 ### 常用国内镜像源
+
 - 清华大学：`https://pypi.tuna.tsinghua.edu.cn/simple`
 - 阿里云：`https://mirrors.aliyun.com/pypi/simple/`
 - 豆瓣：`https://pypi.douban.com/simple/`
@@ -143,6 +161,7 @@ trusted-host = pypi.tuna.tsinghua.edu.cn
 ## 7. 虚拟环境
 
 ### 创建虚拟环境
+
 ```bash
 python -m venv myenv
 ```
@@ -150,21 +169,25 @@ python -m venv myenv
 ### 激活虚拟环境
 
 **macOS/Linux:**
+
 ```bash
 source myenv/bin/activate
 ```
 
 **Windows:**
+
 ```
 myenv\Scripts\activate
 ```
 
 ### 退出虚拟环境
+
 ```bash
 deactivate
 ```
 
 ### 在虚拟环境中安装包
+
 激活虚拟环境后，所有 `pip` 命令都只影响当前虚拟环境。
 
 ---
@@ -172,12 +195,14 @@ deactivate
 ## 8. 其他常用命令
 
 ### 查看已安装的包文件位置
+
 ```bash
 pip show package_name
 # 查看 Location 字段
 ```
 
 ### 检查环境中的包兼容性
+
 ```bash
 pip check
 ```
@@ -185,37 +210,44 @@ pip check
 ### 缓存管理
 
 查看缓存目录：
+
 ```bash
 pip cache dir
 ```
 
 清除缓存：
+
 ```bash
 pip cache purge
 ```
 
 列出缓存文件：
+
 ```bash
 pip cache list
 ```
 
 ### 安装包但不安装依赖
+
 ```bash
 pip install --no-deps package_name
 ```
 
 ### 仅下载包（不安装）
+
 ```bash
 pip download package_name -d ./packages
 ```
 
 ### 从本地目录安装
+
 ```bash
 pip install ./path/to/package.whl
 pip install ./path/to/package.tar.gz
 ```
 
 ### 安装开发模式（可编辑模式）
+
 ```bash
 pip install -e .
 ```
@@ -225,21 +257,25 @@ pip install -e .
 ## 9. 常见问题排查
 
 ### 安装超时
+
 ```bash
 pip install --timeout 100 package_name
 ```
 
 ### 强制重新安装
+
 ```bash
 pip install --force-reinstall package_name
 ```
 
 ### 忽略已安装的包（不检查依赖）
+
 ```bash
 pip install --no-dependencies package_name
 ```
 
 ### 显示详细安装信息（调试用）
+
 ```bash
 pip install -v package_name
 ```
@@ -313,6 +349,7 @@ conda 是一个开源的包管理和环境管理系统，最初为 Python 设计
 ### 环境管理
 
 #### 创建环境
+
 ```bash
 # 创建Python环境
 conda create --name myenv python=3.9
@@ -325,6 +362,7 @@ conda create --name myenv python>=3.8,<3.11
 ```
 
 #### 环境操作
+
 ```bash
 # 列出所有环境
 conda env list
@@ -346,6 +384,7 @@ conda create --name newenv --name oldenv
 ### 包管理
 
 #### 安装包
+
 ```bash
 # 安装包
 conda install package_name
@@ -364,6 +403,7 @@ conda update --all
 ```
 
 #### 查看和管理已安装的包
+
 ```bash
 # 列出已安装的包
 conda list
@@ -381,6 +421,7 @@ conda clean --all
 ### 环境导出与导入
 
 #### 导出环境配置
+
 ```bash
 # 导出完整配置（包含conda和pip包）
 conda env export > environment.yml
@@ -393,6 +434,7 @@ pip freeze > requirements.txt
 ```
 
 #### 从文件创建环境
+
 ```bash
 # 从yml文件创建
 conda env create -f environment.yml
@@ -402,6 +444,7 @@ pip install -r requirements.txt
 ```
 
 #### environment.yml 示例
+
 ```yaml
 name: myenv
 channels:
@@ -420,22 +463,26 @@ dependencies:
 ### Channel 管理
 
 #### 查看当前channels
+
 ```bash
 conda config --show channels
 ```
 
 #### 添加channel
+
 ```bash
 conda config --add channels conda-forge
 conda config --add channels defaults
 ```
 
 #### 设置channel优先级
+
 ```bash
 conda config --set channel_priority strict
 ```
 
 #### 常用channels
+
 - `defaults`: conda默认的软件源
 - `conda-forge`: 社区维护的大型软件源（推荐）
 - `bioconda`: 生物信息学软件源
@@ -525,6 +572,7 @@ dependencies:
 ```
 
 **注意事项**：
+
 1. 先用 conda 安装包，再用 pip 安装剩余包
 2. 避免用 pip 覆盖 conda 安装的包
 3. 在 conda 环境中运行 `pip install`，包会安装到当前环境
