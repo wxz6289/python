@@ -273,6 +273,37 @@ def delete_session(session_id: str) -> None:
   set_app_state("active_session_id", st.session_state.active_session_id)
 
 
+def render_session_row(session_id: str, session: dict, is_active: bool) -> None:
+  row_key = f"session-row-{'active-' if is_active else ''}{session_id}"
+  with st.container(key=row_key):
+    new_title = st.text_area(
+      "会话名称",
+      value=session["title"],
+      key=f"session-title-{session_id}",
+      label_visibility="collapsed",
+      height=46,
+    )
+    updated_title = new_title.strip() or session["title"]
+    if updated_title != session["title"]:
+      session["title"] = updated_title
+      update_session_field(session_id, "title", updated_title)
+
+    clicked = st.button(
+      session["created_at"],
+      key=f"session-select-{session_id}",
+      use_container_width=True,
+    )
+    if clicked and not is_active:
+      st.session_state.active_session_id = session_id
+      set_app_state("active_session_id", session_id)
+      st.rerun()
+
+    with st.container(key=f"session-delete-{session_id}"):
+      if st.button("×", key=f"delete-session-{session_id}", help="删除会话"):
+        delete_session(session_id)
+        st.rerun()
+
+
 @st.cache_resource
 def get_llm(api_key: str, base_url: str | None, model: str) -> ChatOpenAI:
   http_client = httpx.Client(trust_env=False, timeout=30)
@@ -292,13 +323,17 @@ def build_system_prompt() -> str:
   name = active_session["companion_name"]
   personality = active_session["companion_personality"]
   return (
-    f"你是用户的 AI 智能伴侣，名字叫{name}。\n"
-    f"你的性格设定是：{personality}\n"
-    "请用自然、温暖、真诚的中文与用户交流。"
-    "你需要记住当前会话中的上下文，不要每轮都重新自我介绍。"
-    "回答尽量简洁，但在用户需要陪伴或解释时可以更细致。"
+    "你正在扮演用户的 AI 智能伴侣。以下是当前会话绑定的伴侣角色卡：\n"
+    f"- 伴侣名字：{name}\n"
+    f"- 伴侣性格：{personality}\n\n"
+    "你必须始终以这个伴侣身份回复用户。不要说自己只是 AI 模型，也不要忽略角色设定。\n"
+    "回复时要充分展示伴侣性格：语气、措辞、关注点、安慰/鼓励方式都要符合上述性格描述。\n"
+    "如果性格中包含温柔、幽默、理性、活泼、毒舌、姐姐感、陪伴感等特征，"
+    "要自然地体现在表达风格里，但不要过度夸张或重复标签。\n"
+    "你需要记住当前会话上下文，不要每轮都重新自我介绍。\n"
+    "回答尽量简洁自然；当用户需要陪伴、解释、建议或情绪支持时，可以更细致。\n"
     "当用户询问当前时间、数学计算、编程辅助、数据库查询或网络信息时，"
-    "请优先调用可用工具获取结果，再结合工具结果回答。"
+    "请优先调用可用工具获取结果，再结合工具结果用你的伴侣性格进行回答。"
   )
 
 
@@ -505,24 +540,24 @@ def scroll_chat_to_bottom() -> None:
   st.html(
     """
     <script>
-      function scrollParentContainerToBottom() {
-        const frame = window.frameElement;
-        let node = frame ? frame.parentElement : window.document.body;
-        while (node) {
-          const style = window.getComputedStyle(node);
-          const canScroll = node.scrollHeight > node.clientHeight;
-          const overflowY = style.overflowY;
-          if (canScroll && (overflowY === "auto" || overflowY === "scroll")) {
-            node.scrollTop = node.scrollHeight;
-            break;
-          }
-          node = node.parentElement;
+      function scrollChatContainerToBottom() {
+        const candidates = Array.from(window.document.querySelectorAll("*"))
+          .filter((node) => {
+            const style = window.getComputedStyle(node);
+            const canScroll = node.scrollHeight > node.clientHeight + 20;
+            const isScrollable = style.overflowY === "auto" || style.overflowY === "scroll";
+            return canScroll && isScrollable;
+          })
+          .sort((a, b) => b.clientHeight - a.clientHeight);
+
+        if (candidates.length > 0) {
+          candidates[0].scrollTop = candidates[0].scrollHeight;
         }
       }
 
-      setTimeout(scrollParentContainerToBottom, 80);
-      setTimeout(scrollParentContainerToBottom, 300);
-      setTimeout(scrollParentContainerToBottom, 800);
+      setTimeout(scrollChatContainerToBottom, 50);
+      setTimeout(scrollChatContainerToBottom, 200);
+      setTimeout(scrollChatContainerToBottom, 500);
     </script>
     """,
     unsafe_allow_javascript=True,
@@ -535,16 +570,24 @@ st.markdown(
   """
   <style>
     header[data-testid="stHeader"] {
-      display: none;
-    }
-    div[data-testid="stToolbar"] {
-      display: none;
+      background: transparent;
+      height: 2.8rem;
+      z-index: 999;
     }
     div[data-testid="stDecoration"] {
       display: none;
     }
+    div[data-testid="collapsedControl"],
+    button[kind="header"],
+    button[data-testid="baseButton-headerNoPadding"],
+    button[data-testid="stSidebarCollapseButton"] {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+    }
     .block-container {
-      padding-top: 0.75rem;
+      padding-top: 0.25rem;
     }
     .app-header {
       margin: 0 0 0.75rem 0;
@@ -563,23 +606,113 @@ st.markdown(
       margin-top: 0.5rem;
     }
     .chat-bottom-spacer {
-      height: 180px;
+      height: 96px;
     }
     .chat-bottom-anchor {
       height: 1px;
     }
+    div[class*="st-key-session-row-"] {
+      position: relative;
+      border-radius: 0.55rem;
+      padding: 0.18rem 0.25rem;
+      margin: 0.42rem 0.25rem 0.18rem 0;
+      border: 1px solid transparent;
+      transition: background 120ms ease, border-color 120ms ease;
+    }
+    div[class*="st-key-session-row-"]:hover {
+      background: rgba(127, 127, 127, 0.09);
+    }
+    div[class*="st-key-session-row-active-"] {
+      background: rgba(80, 140, 255, 0.12);
+      border-color: rgba(80, 140, 255, 0.3);
+    }
+    div[class*="st-key-session-title-"] div[data-baseweb="textarea"],
+    div[class*="st-key-session-title-"] div[data-baseweb="base-input"] {
+      border: none !important;
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+    div[class*="st-key-session-title-"] textarea {
+      appearance: none;
+      -webkit-appearance: none;
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+      font-weight: 600;
+      line-height: 1.25;
+      padding: 0.25rem 1.8rem 0.15rem 0.45rem;
+      padding-right: 1.8rem;
+      cursor: text;
+      resize: none;
+      min-height: 2.1rem;
+      overflow: hidden;
+    }
+    div[class*="st-key-session-title-"] textarea:hover,
+    div[class*="st-key-session-title-"] textarea:focus {
+      border: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+      outline: none !important;
+    }
+    div[class*="st-key-session-select-"] button {
+      justify-content: flex-start;
+      min-height: 1.4rem;
+      padding: 0 0.55rem 0.35rem 0.55rem;
+      border: none;
+      background: transparent;
+      text-align: left;
+      white-space: pre-line;
+      color: #888;
+      font-size: 0.75rem;
+    }
+    div[class*="st-key-session-select-"] button:hover {
+      background: transparent;
+      border: none;
+    }
+    div[class*="st-key-session-delete-"] {
+      position: absolute;
+      top: -0.42rem;
+      right: -0.38rem;
+      z-index: 2;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 120ms ease, background 120ms ease;
+      width: 1.65rem;
+      height: 1.65rem;
+    }
+    div[class*="st-key-session-row-"]:hover div[class*="st-key-session-delete-"] {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    div[class*="st-key-session-delete-"] button {
+      width: 1.65rem;
+      min-width: 1.65rem;
+      height: 1.65rem;
+      padding: 0;
+      border: none;
+      border-radius: 999px;
+      background: transparent;
+      color: #d33;
+    }
+    div[class*="st-key-session-delete-"] button p {
+      line-height: 1;
+      margin: 0;
+    }
+    div[class*="st-key-session-delete-"] button:hover {
+      background: transparent;
+      border: none;
+    }
   </style>
   <div class="app-header">
     <h1>AI 智能伴侣</h1>
-    <p>左侧管理历史会话与伴侣设置，右侧对话。</p>
+    <p>侧边栏管理历史会话与伴侣设置，主区域对话。</p>
   </div>
   """,
   unsafe_allow_html=True,
 )
 
-side_col, chat_col = st.columns([1, 2.3], gap="large")
-
-with side_col:
+with st.sidebar:
   st.subheader("历史会话")
 
   if st.button("创建会话", use_container_width=True):
@@ -590,32 +723,7 @@ with side_col:
 
   for session_id, session in tuple(st.session_state.sessions.items()):
     is_active = session_id == st.session_state.active_session_id
-    title_col, open_col, delete_col = st.columns([4, 1.2, 1])
-
-    with title_col:
-      new_title = st.text_input(
-        "会话标题",
-        value=session["title"],
-        key=f"session_title_{session_id}",
-        label_visibility="collapsed",
-      )
-      updated_title = new_title.strip() or session["title"]
-      if updated_title != session["title"]:
-        session["title"] = updated_title
-        update_session_field(session_id, "title", updated_title)
-
-    with open_col:
-      if st.button("打开" if not is_active else "当前", key=f"open_{session_id}", use_container_width=True):
-        st.session_state.active_session_id = session_id
-        set_app_state("active_session_id", session_id)
-        st.rerun()
-
-    with delete_col:
-      if st.button("删", key=f"delete_{session_id}", help="删除会话"):
-        delete_session(session_id)
-        st.rerun()
-
-    st.caption(session["created_at"])
+    render_session_row(session_id, session, is_active)
 
   st.divider()
   st.subheader("伴侣设置")
@@ -646,54 +754,53 @@ with side_col:
     active_session["companion_personality"] = updated_personality
     update_session_field(active_session_id, "companion_personality", updated_personality)
 
-with chat_col:
-  active_session = get_active_session()
+active_session = get_active_session()
 
-  messages = active_session["messages"]
-  chat_messages_box = st.container(height=680, border=False)
+messages = active_session["messages"]
+chat_messages_box = st.container(height=620, border=False)
 
+with chat_messages_box:
+  if not messages:
+    st.info("开始和你的 AI 智能伴侣聊天吧。")
+
+  for message in messages:
+    with st.chat_message(message["role"]):
+      st.markdown(message["content"])
+  render_chat_bottom_anchor()
+  scroll_chat_to_bottom()
+
+user_input = st.chat_input("请输入你想说的话...")
+if user_input:
+  messages.append({"role": "user", "content": user_input})
+  insert_message(st.session_state.active_session_id, "user", user_input)
   with chat_messages_box:
-    if not messages:
-      st.info("开始和你的 AI 智能伴侣聊天吧。")
+    with st.chat_message("user"):
+      st.markdown(user_input)
 
-    for message in messages:
-      with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-    render_chat_bottom_anchor()
-    scroll_chat_to_bottom()
-
-  user_input = st.chat_input("请输入你想说的话...")
-  if user_input:
-    messages.append({"role": "user", "content": user_input})
-    insert_message(st.session_state.active_session_id, "user", user_input)
+  try:
     with chat_messages_box:
-      with st.chat_message("user"):
-        st.markdown(user_input)
-
-    try:
-      with chat_messages_box:
-        assistant_message_box = st.container()
-        render_chat_bottom_spacer()
-        scroll_chat_to_bottom()
-        with assistant_message_box:
-          with st.chat_message("assistant"):
-            with st.spinner("伴侣正在思考..."):
-              reply = st.write_stream(stream_reply(messages))
-        scroll_chat_to_bottom()
-      messages.append({"role": "assistant", "content": reply})
-      insert_message(st.session_state.active_session_id, "assistant", reply)
-    except Exception as exc:
-      error_message = f"调用大模型失败：{exc}"
-      messages.append({
-        "role": "assistant",
-        "content": error_message,
-      })
-      insert_message(st.session_state.active_session_id, "assistant", error_message)
-      with chat_messages_box:
-        assistant_message_box = st.container()
-        render_chat_bottom_spacer()
-        scroll_chat_to_bottom()
-        with assistant_message_box:
-          with st.chat_message("assistant"):
-            st.error(error_message)
-        scroll_chat_to_bottom()
+      assistant_message_box = st.container()
+      render_chat_bottom_spacer()
+      scroll_chat_to_bottom()
+      with assistant_message_box:
+        with st.chat_message("assistant"):
+          with st.spinner("伴侣正在思考..."):
+            reply = st.write_stream(stream_reply(messages))
+      scroll_chat_to_bottom()
+    messages.append({"role": "assistant", "content": reply})
+    insert_message(st.session_state.active_session_id, "assistant", reply)
+  except Exception as exc:
+    error_message = f"调用大模型失败：{exc}"
+    messages.append({
+      "role": "assistant",
+      "content": error_message,
+    })
+    insert_message(st.session_state.active_session_id, "assistant", error_message)
+    with chat_messages_box:
+      assistant_message_box = st.container()
+      render_chat_bottom_spacer()
+      scroll_chat_to_bottom()
+      with assistant_message_box:
+        with st.chat_message("assistant"):
+          st.error(error_message)
+      scroll_chat_to_bottom()
