@@ -137,7 +137,47 @@ Agent 强在“动态决策 + 工具调用”，弱在“稳定性和可预测�
 - 强一致性、高审计要求流程（建议显式编排）；
 - 高并发低延迟核心链路（Agent 成本高、波动大）。
 
-### Agent 最佳实践
+### 5.1 新版 LangChain Agent 主要类型对比
+
+新版 LangChain 的重点已经不是通过 `AgentType` 枚举选择大量内置 Agent，而是推荐用 `create_agent` 构建标准 Agent，并在复杂场景下下沉到 LangGraph 自定义执行图。
+
+| 类型 | 典型 API / 方式 | 核心特点 | 适合场景 | 优点 | 注意点 |
+| --- | --- | --- | --- | --- | --- |
+| 标准工具调用 Agent | `create_agent(model, tools, system_prompt=...)` | 模型根据问题自动选择工具，执行工具后把结果放回上下文，再继续生成 | 搜索、查数据库、调用内部 API、执行计算等通用工具型任务 | 新版首选；接口简单；底层基于 LangGraph，支持流式、状态、持久化和中断 | 工具描述和参数 schema 必须清晰，否则容易误调用 |
+| ReAct 风格 Agent | 新版通常通过 `create_agent` 的工具循环实现；旧版常见 `ZERO_SHOT_REACT_DESCRIPTION` | 按“思考 -> 行动 -> 观察 -> 再思考”的模式循环调用工具 | 需要多步推理、多工具协作、路径不固定的任务 | 可解释性较好，便于观察工具调用链路 | 推理链路长，成本和延迟更高；要限制最大轮数 |
+| 结构化输出 Agent | `create_agent(..., response_format=Schema)` | Agent 最终输出符合 Pydantic / JSON Schema 等结构 | 表单抽取、任务分类、生成可落库结果、需要稳定字段的场景 | 比自由文本更容易进入业务系统；便于校验和重试 | 结构复杂时要处理解析失败和模型不完全遵循 schema 的情况 |
+| 带记忆 / 持久化 Agent | `create_agent(..., checkpointer=..., store=...)` 或 LangGraph persistence | 把会话状态、工具结果、长期记忆保存到外部存储 | 多轮对话、用户画像、长期任务、跨请求恢复 | 支持中断恢复；上下文不依赖单次进程内存 | 要区分短期聊天历史和长期记忆；敏感信息需要脱敏和过期策略 |
+| 带中间件 Agent | `create_agent(..., middleware=[...])` | 通过 middleware 在模型调用、工具调用、上下文管理前后插入逻辑 | 需要审计、脱敏、摘要、人工确认、动态模型选择的生产应用 | 横切能力可复用；比在业务代码里硬编码更清晰 | middleware 过多会增加调试复杂度，需要 tracing |
+| Human-in-the-loop Agent | `HumanInTheLoopMiddleware`、`interrupt_before/after` | 在敏感工具调用前后暂停，等待人工批准或补充信息 | 支付、发邮件、删数据、改配置、执行生产操作 | 降低高风险自动化操作的事故概率 | 需要设计审批 UI、超时策略和幂等机制 |
+| 自定义 LangGraph Agent | `StateGraph` / LangGraph 节点和边 | 把 Agent 拆成显式图：模型节点、工具节点、审核节点、路由节点等 | 复杂业务流、多阶段审批、多 Agent 协作、强可控流程 | 可控性最高；适合生产级复杂编排 | 开发成本高于 `create_agent`，需要先设计状态结构 |
+| 多 Agent 协作 | 通常基于 LangGraph 自定义 supervisor / worker / handoff 流程 | 多个角色 Agent 分工协作，由主管 Agent 路由或汇总 | 复杂研究、代码生成、数据分析、任务拆解 | 角色职责清晰，可并行或分阶段处理复杂任务 | 容易放大成本和不确定性；需要明确停止条件和结果合并规则 |
+
+### 5.2 旧版 AgentType 对比与迁移建议
+
+旧版 LangChain 常通过 `initialize_agent(..., agent=AgentType.xxx)` 选择 Agent 类型，这类方式在新版中不再是首选。新项目建议优先使用 `create_agent` 或 LangGraph。
+
+| 旧版类型 | 主要用途 | 新版建议 |
+| --- | --- | --- |
+| `ZERO_SHOT_REACT_DESCRIPTION` | 经典 ReAct Agent，根据工具描述零样本选择工具 | 用 `create_agent(model, tools)` 替代 |
+| `STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION` | 支持多参数工具的结构化 Chat Agent | 用带 schema 的 tool + `create_agent` 替代 |
+| `OPENAI_FUNCTIONS` | 基于 OpenAI function calling 的 Agent | 用支持 tool calling 的模型 + `create_agent` 替代 |
+| `OPENAI_MULTI_FUNCTIONS` | 一次调用中可能选择多个 OpenAI function | 用现代 tool calling 模型和显式工具循环替代 |
+| `CONVERSATIONAL_REACT_DESCRIPTION` | 带对话记忆的 ReAct Agent | 用 `create_agent` + `checkpointer` / message history 替代 |
+| `CHAT_ZERO_SHOT_REACT_DESCRIPTION` | 面向 Chat Model 的零样本 ReAct Agent | 用 `create_agent` 替代 |
+| `CHAT_CONVERSATIONAL_REACT_DESCRIPTION` | 面向 Chat Model 且带对话历史的 ReAct Agent | 用 `create_agent` + 持久化状态替代 |
+| `SELF_ASK_WITH_SEARCH` | 通过搜索工具拆解问题并逐步回答 | 用搜索 tool + `create_agent`，或显式 LCEL / LangGraph 流程替代 |
+| `REACT_DOCSTORE` | 面向文档库问答的 ReAct Agent | 多数场景改用 RAG Chain；复杂检索再接 Agent |
+
+### 5.3 选择建议
+
+- **优先选 Chain / Runnable**：流程固定、可预测、对稳定性要求高。
+- **优先选 `create_agent`**：任务路径不固定，但主要是“模型 + 工具调用”的常规 Agent。
+- **优先选结构化输出 Agent**：最终结果要进入数据库、接口或自动化流程。
+- **优先选带 checkpointer 的 Agent**：需要多轮对话恢复、任务暂停继续、跨请求保存状态。
+- **优先选 LangGraph 自定义 Agent**：需要复杂状态机、人工审批、多 Agent 协作或强可控流程。
+- **谨慎使用多 Agent**：只有当任务天然可拆分为多个专业角色时再引入，否则会显著增加成本和不确定性。
+
+### 5.4 Agent 最佳实践
 
 - 限制可用工具数量，降低误调用概率；
 - 工具入参严格 schema 化，避免自由文本直透后端；
