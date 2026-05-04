@@ -1,4 +1,5 @@
 from langchain_openai import ChatOpenAI
+from pydantic import SecretStr
 
 import os
 
@@ -10,11 +11,10 @@ if __name__ == "__main__":
   chain = ChatOpenAI(
     model="deepseek-chat",
     temperature=0,
-    api_key=deepseek_api_key,
+    api_key=SecretStr(deepseek_api_key),
     base_url="https://api.deepseek.com/v1",
     timeout=30,
-    max_retries=2,
-    response_format= { "type": "json_object"}
+    max_retries=2
   )
 
   try:

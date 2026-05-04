@@ -6,7 +6,7 @@ from langchain_unstructured import UnstructuredLoader
 
 # loader = CSVLoader(file_path = "test.csv")
 # loader = JSONLoader(file_path="simple_prompt.json", jq_schema=".[]", text_content=False)
-loader = UnstructuredLoader("simple_prompt.yml")
+loader = UnstructuredLoader("resources/simple_prompt.yml")
 data = loader.load()
 print(data)
 

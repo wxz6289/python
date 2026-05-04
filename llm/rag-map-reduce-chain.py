@@ -97,7 +97,7 @@ def lcel_map_reduce(chunks):
     "final": final_summary
   }
 
-loader = UnstructuredLoader('Pinia-Cheat-Sheet.pdf')
+loader = UnstructuredLoader('resources/Pinia-Cheat-Sheet.pdf')
 docs = loader.load()
 
 splitter = RecursiveCharacterTextSplitter(

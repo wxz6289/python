@@ -3,9 +3,7 @@ from langgraph.checkpoint.memory import InMemorySaver
 from langchain.messages import HumanMessage
 
 if __name__ == "__main__":
-  config = {
-            "configurable": { "thread_id": "test" }
-            }
+  config = { "configurable": { "thread_id": "test" } }
 
   agent = create_agent(
     "deepseek-chat",
@@ -14,7 +12,9 @@ if __name__ == "__main__":
 
   result = agent.invoke(
     {"messages": [
-      HumanMessage(content="你好，我是King, 请给我介绍React相关的知识"), HumanMessage(content="你好，我是谁？")]},
+      HumanMessage(content="你好，我是King, 请给我介绍React相关的知识"),
+      HumanMessage(content="你好，我是谁？")
+    ]},
     config=config)
 
   for message in result.get("messages", []):

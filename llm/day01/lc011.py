@@ -1,8 +1,6 @@
 from langchain_community.chat_models import ChatTongyi
 from langchain.agents import create_agent
 from langchain.messages import HumanMessage
-# from ipywidgets import FileUpload
-# from IPython.display import display
 import base64
 
 
@@ -10,8 +8,6 @@ if __name__ == "__main__":
   model = ChatTongyi(
     model="qwen-max",
   )
-  # file_upload = FileUpload()
-  # uploaded_file = file_upload.value[0]
   with open("../example/index.png", "rb") as f:
     image_data = f.read()
     base64_image = base64.b64encode(image_data).decode("utf-8")

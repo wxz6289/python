@@ -1,0 +1,29 @@
+[project]
+name = "lang-smith"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic>=0.97.0",
+    "chromadb>=1.5.8",
+    "daytona>=0.171.0",
+    "deepagents>=0.5.6",
+    # 1.2.15 无 langchain.agents.AgentState，deepagents 导入会失败；勿降级到 1.2.15
+    "httpx>=0.28.1",
+    "langchain>=1.2.17,<2",
+    "langchain-anthropic>=1.4.2",
+    "langchain-core>=1.3.2",
+    "langchain-daytona>=0.0.5",
+    "langchain-deepseek>=1.0.1",
+    "langchain-openai>=1.2.1",
+    "langgraph-checkpoint-postgres>=3.0.5",
+    "langgraph-checkpoint-sqlite>=3.0.3",
+    "langsmith>=0.8.0",
+    "markdownify>=1.2.2",
+    "openai>=2.33.0",
+    "psycopg[binary]>=3.3.4",
+    "python-dotenv>=1.0.0",
+    "slack-sdk>=3.41.0",
+    "tavily-python>=0.7.24",
+]

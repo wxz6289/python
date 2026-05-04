@@ -1,7 +1,7 @@
 from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import PromptTemplate
-
+from pydantic import SecretStr
 import os
 
 
@@ -13,7 +13,7 @@ if __name__ == "__main__":
   llm = ChatOpenAI(
     model="deepseek-chat",
     temperature=0,
-    api_key=deepseek_api_key,
+    api_key= SecretStr(deepseek_api_key),
     base_url="https://api.deepseek.com/v1",
     timeout=30,
     max_retries=2,

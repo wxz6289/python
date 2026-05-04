@@ -1,18 +1,15 @@
+import json
+import math
+import os
+from typing import List, Literal
+
+import requests
 from langchain.agents import create_agent
-from langchain_deepseek import ChatDeepSeek
 from langchain.messages import HumanMessage
 from langchain.tools import tool
-from pydantic import BaseModel, Field
-from typing import List, Literal
-from urllib.parse import quote
-import requests
-import os
-from urllib.request import urlopen
-import json
-import json
-from urllib.parse import urlencode
-import math
+from langchain_deepseek import ChatDeepSeek
 from langchain_tavily import TavilySearch
+from pydantic import BaseModel, Field
 
 search_tool = TavilySearch(
   max_results=5,
@@ -128,7 +125,9 @@ if __name__ == "__main__":
   llm = ChatDeepSeek(model="deepseek-chat",
                      base_url="https://api.deepseek.com/v1",
                      api_key=deepseek_api_key)
-  agent = create_agent(model=llm, tools = [get_weather, square, log, search_tool], system_prompt=system_prompt)
+  agent = create_agent(model=llm,
+                       tools = [get_weather, square, log, search_tool],
+                       system_prompt=system_prompt)
   response = run("蒸蚌是什么梗? 请搜索相关资料并生成JSON数据", agent, llm)
 
   for message in response:

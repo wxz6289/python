@@ -6,6 +6,8 @@
 - 在新版本中，官方更推荐基于 `Runnable` / `LCEL`（LangChain Expression Language）来表达链式流程。
 - 可以把 `Chain` 理解为“业务流程模板”，把模型调用、工具调用、检索等组合在一起。
 
+
+
 ## 2) 新版主线：Runnable + LCEL
 
 - 核心接口：`Runnable`
@@ -26,11 +28,20 @@
 - 场景：简单问答、改写、分类、抽取。
 - 说明：很多示例仍在使用，但新项目优先用 LCEL 的 Runnable 写法。
 
-### 3.2 `ConversationChain`
+### 3.2 `ConversationChain
 
 - 功能：带记忆（Memory）的对话链。
 - 场景：多轮上下文聊天。
 - 说明：新版更推荐使用消息历史相关 Runnable 方案（更灵活）。
+
+- ConversationBufferWindowMemory
+
+- ConversationTokenBufferMemory
+- ConversatiionSummaryMemory
+- ConversatiionSummaryBufferMemory
+- ConversationEntityMemory
+- ConversationKGMemory
+- VectorStoreRetrieverMemory
 
 ### 3.3 `SequentialChain` / `SimpleSequentialChain`
 

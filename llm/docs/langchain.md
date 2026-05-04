@@ -494,6 +494,51 @@ Agent 收到“哪个学生 LangChain 成绩最高？”这类问题时，大致
 - 对高风险工具（删除、转账、发邮件等）：建议增加人工确认或权限校验。
 - 新版 LangChain / LangGraph 场景中，Toolkit 仍然是“组织工具”的方式，最终交给 Agent 的通常还是 `tools` 列表。
 
+---
+
+## LangChain、LlamaIndex 与 Semantic Kernel 对比
+
+三者都可用来搭建 LLM 应用，但**默认抽象不同**：LangChain 强调「Runnable / LCEL / Agent / LangGraph」链路与编排；LlamaIndex 强调「数据索引、检索与查询引擎」；Semantic Kernel（SK）强调「内核 + Planner + 插件（技能）」并与 **.NET / Azure / Microsoft 365** 栈整合。
+
+### 1）一句话定位
+
+| 框架 | 一句话 |
+| --- | --- |
+| **LangChain** | 通用编排：Prompt、模型、工具、RAG、Agent；复杂流程再上 **LangGraph** |
+| **LlamaIndex** | 数据优先：**摄取 → 索引 → 检索 → 查询/合成**；工作流与 Agent 多为检索场景的延伸 |
+| **Semantic Kernel** | 微软系：**插件即能力**，Planner 组装调用；跨语言（**C# 主战场**，Python 也可用） |
+
+### 2）维度对照（选型用）
+
+| 维度 | LangChain | LlamaIndex | Semantic Kernel |
+| --- | --- | --- | --- |
+| **强项** | 链路与 Agent 表达力强；生态与教程多；与 LangGraph/LangSmith 一体 | 异构数据接入、索引抽象、RAG/Agentic RAG 纵深 | Azure/OpenAI 与企业集成、插件模型清晰 |
+| **典型弱项** | 组件多、版本迭代快，需跟迁移指南 | 脱离「数据管线」时未必比 LC 更省事 | Python 侧社区体量小于 C#；通用教程少于 LC/LlamaIndex |
+| **生态主场** | Python/JS 活跃；企业观测常与 LangSmith 搭配 | Python；检索与数据处理库集成广 | **.NET + Azure AI**；Copilot 扩展思路相近 |
+| **复杂流程** | **LangGraph**（状态机、循环、人机回路） | Workflow、`RouterQueryEngine`、低级 compose | Planner（Sequential / Handlebars / Stepwise 等）+ 插件 |
+
+### 3）何时优先选谁（可执行）
+
+- **优先 LangChain（+ LangGraph）**  
+  - 要以「**统一 Runnable 链路**」贯穿：多模型切换、LCEL、Tool Calling Agent、与 LangSmith 追踪一套打通。  
+  - 图/workflow 要强约束：**分支、重试、持久状态、人在回路** → 直接用 LangGraph。
+
+- **优先 LlamaIndex**  
+  - 瓶颈在 **数据**：PDF/HTML/SQL/图谱等多源接入、chunk、索引、混合检索、查询路由、citation —— 先做「问得准」再上编排。  
+  - **LlamaIndex + LangChain 混用**很常见：索引与检索用 LlamaIndex，外层 Agent/编排仍可用 LangChain。
+
+- **优先 Semantic Kernel**  
+  - 团队在 **C# / ASP.NET / Azure**，或要强依赖 **Azure AI Search、Key Vault、现有 SK 插件**。  
+  - 想要「**Planner 选插件**」的微软范式，与微软示例、发布节奏一致。
+
+### 4）重叠与组合
+
+- **RAG**：三者都能做；LlamaIndex 往往在最重的「索引与检索」层更省事，LangChain 负责外层 Agent 或多数据源编排时可拆开边界。  
+- **Agent**：LangChain/LangGraph 与 LlamaIndex 的 Agent 组件都在演进；SK 则侧重 **插件 + Planner**。  
+- **不存在唯一正确答案**：按「团队语言栈 + 数据复杂度 + 是否要微软/Azure 一体化」选主轴，再按需 **LlamaIndex（数据） + LangChain/LangGraph（编排）** 拼接。
+
+---
+
 ## 1）通用 LLM 应用/链路编排框架
 
 - **LlamaIndex**：偏 RAG/数据摄取与索引（把文档/数据变成可检索结构），也支持工具与工作流。

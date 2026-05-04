@@ -2,7 +2,6 @@ from langchain_community.chat_models import ChatTongyi
 from langchain.agents import create_agent
 from langchain.messages import HumanMessage
 
-
 if __name__ == "__main__":
   model = ChatTongyi(
     model="qwen-max",

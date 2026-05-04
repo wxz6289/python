@@ -1,15 +1,14 @@
+import json
+import math
+import os
+from typing import Literal
+
+import requests
 from langchain.agents import create_agent
 from langchain.messages import HumanMessage
 from langchain.tools import tool
 from pydantic import BaseModel, Field
-from typing import Literal
-from urllib.parse import quote
-import requests
-import os
-from urllib.request import urlopen
-import json
-from urllib.parse import urlencode
-import math
+
 
 class WeatherInput(BaseModel):
   location: str = Field(description="城市名称")

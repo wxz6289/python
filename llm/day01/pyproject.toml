@@ -16,4 +16,4 @@ dependencies = [
 ]
 
 [tool.mypy]
-# python_executable = "../../.venv/bin/python"
+ python_executable = "../../.venv/bin/python"

@@ -6,7 +6,7 @@ import os
 
 from rag import deepseek_api_key
 
-loader = UnstructuredFileLoader("html.txt")
+loader = UnstructuredFileLoader("resources/html.txt")
 docs = loader.load()
 
 for d in docs:

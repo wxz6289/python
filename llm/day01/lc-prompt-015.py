@@ -1,6 +1,7 @@
 from langchain.agents import create_agent
 from langchain.messages import HumanMessage
 from pydantic import BaseModel
+import json
 
 class User(BaseModel):
   id: int
@@ -46,7 +47,9 @@ if __name__ == "__main__":
   注意: 无需输出任何其他内容，直接输出JSON格式数据。
   """
 
-  agent = create_agent(model="deepseek-chat", response_format=UserList, system_prompt=system_prompt)
+  agent = create_agent(model="deepseek-chat",
+                       response_format=UserList,
+                       system_prompt=system_prompt)
 
   message = HumanMessage("请生成10条用户数据,以json格式输出")
   response = agent.invoke({"messages": [message]})

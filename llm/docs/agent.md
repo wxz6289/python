@@ -275,4 +275,6 @@ AutoRT 代表的是“从软件 Agent 走向现实世界智能体”的工程路
 - chat_zero_shot_react_description 零样本增强生成(对话)
 - conversational_react_description 对话增强生成
 - structured_chat_zero_shot_react_description 结构化对话生成增强
--
+
+create_agent()
+@wrap_model_call

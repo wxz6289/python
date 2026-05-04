@@ -1,6 +1,5 @@
 import os
 from typing import Dict, List, TypedDict
-
 from pydantic import SecretStr
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
@@ -96,6 +95,7 @@ if __name__ == "__main__":
         "new_turn": new_turn,
       }
     )
+
     state["summary"] = (
       updated_summary.content if hasattr(updated_summary, "content") else str(updated_summary)
     )
