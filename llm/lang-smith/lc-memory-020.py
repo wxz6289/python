@@ -1,6 +1,6 @@
 from langchain.agents import create_agent
 import sqlite3
-from langgraph.checkpoint.sqlite import SqliteSaver
+from langgraph_checkpoint_sqlite import SqliteSaver
 from langchain.messages import HumanMessage
 import os
 
