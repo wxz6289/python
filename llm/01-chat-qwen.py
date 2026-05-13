@@ -4,9 +4,9 @@ from langchain.messages import HumanMessage,SystemMessage
 import os
 
 if __name__ == "__main__":
-  api_key = os.getenv("DASHSCOPE_API_KEY") or os.getenv("OPENAI_API_KEY")
+  api_key = os.getenv("DASHSCOPE_API_KEY")
   if not api_key:
-    raise EnvironmentError("Please set DASHSCOPE_API_KEY (or OPENAI_API_KEY).")
+    raise EnvironmentError("Please set DASHSCOPE_API_KEY.")
 
   llm = ChatOpenAI(
     model="qwen3.6-plus",

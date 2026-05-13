@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="epi_sim">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/data-analysis/pandas-for-everyone/data/epi_sim.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

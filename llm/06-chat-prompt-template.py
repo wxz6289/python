@@ -1,5 +1,4 @@
 from langchain_core.prompts import ChatPromptTemplate, \
-  SystemMessagePromptTemplate, HumanMessagePromptTemplate, \
   AIMessagePromptTemplate
 
 chat_template = ChatPromptTemplate.from_messages(
@@ -11,7 +10,8 @@ chat_template = ChatPromptTemplate.from_messages(
     ]
 )
 
-chat_template.format_messages(name="高启明", user_input="你叫什么名字?")
+prompt = chat_template.format_messages(name="高启明", user_input="你叫什么名字?")
+print(prompt)
 
 chat_template = ChatPromptTemplate.from_template(role="ai", template="我是{name}的助理")
 chat_message = chat_template.format(name="你")
