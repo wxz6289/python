@@ -1,13 +1,20 @@
-.DS_Store
+# IDE / Editor
+.idea
 .vscode
-.conda
+
+# Python
 .venv
-.mypy_cache
+.conda
 __pycache__
-python/__pycache__
-python/.mypy_cache
-**/**/.ipynb_checkpoints
-**/**/__pycache__
+.mypy_cache
+.ipynb_checkpoints
+
+# OS
+.DS_Store
+
+# Environment & secrets
+**/.env
+
+# Project-specific ignores
 **/python/test/**
-**/**/.env
-**/resources
+llm/resources
