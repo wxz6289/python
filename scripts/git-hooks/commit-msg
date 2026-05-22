@@ -1,0 +1,11 @@
+#!/bin/sh
+# Strip Cursor agent co-author trailers (added by some IDE/agent flows).
+# Install: cp scripts/git-hooks/commit-msg .git/hooks/commit-msg && chmod +x .git/hooks/commit-msg
+
+msg_file="$1"
+[ -n "$msg_file" ] || exit 0
+[ -f "$msg_file" ] || exit 0
+
+tmp="${msg_file}.cursor-strip"
+sed '/^Co-authored-by: Cursor <cursoragent@cursor.com>$/d' "$msg_file" > "$tmp" && mv "$tmp" "$msg_file"
+exit 0
