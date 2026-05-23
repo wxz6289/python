@@ -429,11 +429,11 @@ healthcheck:
 
 | 资源 | URL |
 |------|-----|
-| Uvicorn 官方文档 | https://www.uvicorn.org/ |
-| Settings 参考 | https://www.uvicorn.org/settings/ |
-| Deployment | https://www.uvicorn.org/deployment/ |
-| ASGI 规范 | https://asgi.readthedocs.io/ |
-| FastAPI 部署 | https://fastapi.tiangolo.com/deployment/ |
+| Uvicorn 官方文档 | <https://www.uvicorn.org/> |
+| Settings 参考 | <https://www.uvicorn.org/settings/> |
+| Deployment | <https://www.uvicorn.org/deployment/> |
+| ASGI 规范 | <https://asgi.readthedocs.io/> |
+| FastAPI 部署 | <https://fastapi.tiangolo.com/deployment/> |
 | 本项目 FastAPI 笔记 | [fastapi.md](./fastapi.md) |
 
 ---

@@ -4,3 +4,19 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .env
+
+
+# path
+resources/
+resources/*_[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]*
+resources/passwd
+resources/chunk.bin
+resources/large.bin
+resources/test.bin
+resources/a.txt
+resources/b.txt
+resources/t.txt
+resources/one.txt
+resources/same.txt
+resources/test.txt
+resources/test

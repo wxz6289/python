@@ -100,6 +100,7 @@ cp .env.example .env
 
 ```bash
 uv run python main.py
+uv run main.py
 ```
 
 或直接：
@@ -118,9 +119,9 @@ uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
 
 | 地址 | 说明 |
 |------|------|
-| http://127.0.0.1:8000/docs | Swagger UI |
-| http://127.0.0.1:8000/redoc | ReDoc |
-| http://127.0.0.1:8000/health | 健康检查 |
+| <http://127.0.0.1:8000/docs> | Swagger UI |
+| <http://127.0.0.1:8000/redoc> | ReDoc |
+| <http://127.0.0.1:8000/health> | 健康检查 |
 
 ## 常用 uv 命令
 
@@ -219,22 +220,22 @@ uv run pytest
 
 ## 常见问题
 
-**Q: IDE 提示找不到 `app` 或 `fastapi` 模块？**  
+**Q: IDE 提示找不到 `app` 或 `fastapi` 模块？**
 A: 1) 执行 `uv sync --extra dev`；2) 选择解释器为 `ai-server/.venv/bin/python`（命令面板 → `Python: Select Interpreter`）；3) 推荐用 Cursor 打开 `ai-server/ai-server.code-workspace` 以获得独立工作区配置。
 
-**Q: 报 `No module named 'pydantic_settings'`？**  
+**Q: 报 `No module named 'pydantic_settings'`？**
 A: 执行 `uv sync` 或 `uv sync --extra dev`，不要直接用系统 Python 运行。
 
-**Q: 启动报 `DEEPSEEK_API_KEY` 缺失？**  
+**Q: 启动报 `DEEPSEEK_API_KEY` 缺失？**
 A: 复制 `.env.example` 为 `.env` 并填写密钥。
 
-**Q: Redis 连接失败？**  
+**Q: Redis 连接失败？**
 A: 确认 Redis 已启动且 `REDIS_URL` 正确（默认端口 `6380`）。
 
-**Q: `/chat` 响应慢？**  
+**Q: `/chat` 响应慢？**
 A: LLM 调用本身耗时；后续可改为 WebSocket 流式输出（见 [doc/fastapi-learning-plan.md](./doc/fastapi-learning-plan.md) Day 3）。
 
-**Q: IDE 提示找不到包？**  
+**Q: IDE 提示找不到包？**
 A: 将 Python 解释器设为 `ai-server/.venv/bin/python`（由 `uv sync` 创建）。
 
 ## 相关文档

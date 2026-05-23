@@ -5,22 +5,34 @@ description = "FastAPI + LangChain + Redis 命理对话服务"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi>=0.136.1",
+    "aerich>=0.8.1",
+    "aiofiles>=25.1.0",
+    "aiomysql>=0.3.2",
+    "asyncmy>=0.2.11",
+    "bcrypt>=5.0.0",
+    "cryptography>=48.0.0",
+    "fastapi[standard]>=0.136.1",
+    "greenlet>=3.4.0",
     "langchain>=1.2.15",
     "langchain-community>=0.4.1",
     "langchain-deepseek>=1.0.0",
+    "passlib>=1.7.4",
     "pydantic>=2.13.3",
     "pydantic-settings>=2.14.0",
+    "pymysql>=1.2.0",
     "python-dotenv>=1.0.0",
+    "python-jose>=3.5.0",
+    "python-multipart>=0.0.29",
+    "pyyaml>=6.0.3",
     "redis>=7.4.0",
+    "sqlalchemy>=2.0.49",
+    "tomlkit>=0.15.0",
+    "tortoise-orm>=1.1.7",
     "uvicorn>=0.46.0",
 ]
 
 [project.optional-dependencies]
-dev = [
-    "httpx>=0.28.0",
-    "pytest>=8.0.0",
-]
+dev = ["httpx>=0.28.0", "pytest>=8.0.0"]
 
 [build-system]
 requires = ["hatchling"]
@@ -45,9 +57,29 @@ files = ["app", "main.py", "tests"]
 warn_unused_ignores = true
 
 [[tool.mypy.overrides]]
-module = ["fastapi.*", "langchain.*", "langchain_community.*", "langchain_core.*", "uvicorn.*"]
+module = [
+    "fastapi.*",
+    "langchain.*",
+    "langchain_community.*",
+    "langchain_core.*",
+    "uvicorn.*",
+    "jose.*",
+    "passlib.*",
+    "yaml.*",
+    "tortoise.*",
+    "aerich.*",
+]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+asyncio_mode = "auto"
+
+[tool.aerich]
+tortoise_orm = "app.db.tortoise_config.TORTOISE_ORM"
+location = "./migrations"
+src_folder = "./."
+
+[dependency-groups]
+dev = ["httpx>=0.28.1", "pytest-asyncio>=1.3.0"]

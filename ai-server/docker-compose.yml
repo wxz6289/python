@@ -1,0 +1,25 @@
+services:
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: ai-server123
+      MYSQL_DATABASE: ai_server
+    container_name: mysql-ai-server
+    ports:
+      - "3309:3306"
+    volumes:
+      - /Users/dreamerking/data/ai-server-mysql:/var/lib/mysql
+      - ./app/db/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+
+  bitnami_redis:
+    image: bitnami/redis:latest
+    container_name: redis_ai-server
+    ports:
+      - "6381:6379"
+    volumes:
+      - redis_ai-server_data:/bitnami/redis/data
+    environment:
+      REDIS_PASSWORD: redis
+
+volumes:
+  redis_ai-server_data:

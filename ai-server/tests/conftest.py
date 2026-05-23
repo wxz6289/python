@@ -11,6 +11,6 @@ os.environ.setdefault("DEEPSEEK_BASE_URL", "https://api.example.com/v1")
 def client():
     from app.main import create_app
 
-    app = create_app(init_master=False)
+    app = create_app(init_master=False, init_db=False)
     with TestClient(app) as test_client:
         yield test_client
