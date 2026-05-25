@@ -1,8 +1,11 @@
-from langchain.chat_models import init_chat_model
 from langchain_community.chat_message_histories.redis import RedisChatMessageHistory
+from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain_deepseek import ChatDeepSeek
+from langchain_openai import ChatOpenAI
+from pydantic import SecretStr
 
 from app.config import Settings
 
@@ -30,15 +33,27 @@ SYSTEM_PROMPT = """
 """.strip()
 
 
+def build_chat_model(settings: Settings) -> BaseChatModel:
+    api_key = SecretStr(settings.llm_api_key)
+    if settings.resolved_llm_provider == "closeai":
+        return ChatOpenAI(
+            model=settings.llm_model,
+            temperature=0,
+            api_key=api_key,
+            base_url=settings.llm_base_url,
+        )
+    return ChatDeepSeek(
+        model=settings.llm_model,
+        temperature=0,
+        api_key=api_key,
+        api_base=settings.llm_base_url,
+    )
+
+
 class Master:
     def __init__(self, settings: Settings):
         self.settings = settings
-        self.chat_model = init_chat_model(
-            model="deepseek-chat",
-            temperature=0,
-            api_key=settings.deepseek_api_key,
-            base_url=settings.deepseek_base_url,
-        )
+        self.chat_model = build_chat_model(settings)
         self.prompt = ChatPromptTemplate.from_messages(
             [
                 ("system", SYSTEM_PROMPT),
@@ -55,9 +70,13 @@ class Master:
         )
 
     def get_session_history(self, session_id: str) -> RedisChatMessageHistory:
+        redis_url = self.settings.redis_url
+        if redis_url is None:
+            msg = "REDIS_URL is not configured"
+            raise RuntimeError(msg)
         return RedisChatMessageHistory(
             session_id=session_id,
-            url=self.settings.redis_url,
+            url=redis_url,
             key_prefix="ai-server:chat:",
             ttl=self.settings.redis_ttl_seconds,
         )

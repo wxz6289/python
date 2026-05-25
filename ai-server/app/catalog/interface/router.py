@@ -4,7 +4,7 @@ from typing import List, Optional, Union
 from fastapi import APIRouter, Query, status
 from pydantic import Field
 
-from app.schemas.item import Item
+from app.catalog.schemas.item import Item
 from app.schemas.response import page_meta, set_response_meta, set_response_msg
 
 router = APIRouter(prefix="/items", tags=["items"])
@@ -30,7 +30,7 @@ async def create_item(item: Item) -> Item:
     return item
 
 
-@router.get("")
+@router.get("/v1")
 async def get_items(page: int = 1, page_size: int = 10) -> list[Item]:
     """获取分页物品。"""
     if page < 1 or page_size < 1:
@@ -44,7 +44,7 @@ async def get_items(page: int = 1, page_size: int = 10) -> list[Item]:
     return items
 
 
-@router.get("/{item_id}")
+@router.get("/v2/{item_id}")
 async def get_item(item_id: int, q: str | None = None) -> dict[str, Item | str | None]:
     """获取单个物品。"""
     return {"item": _mock_item(item_id), "q": q}
@@ -141,4 +141,4 @@ class ItemOut(Item):
 
 @router.get("/query7/q", response_model=ItemOut, response_model_exclude_unset=True)
 async def query_items7(q: str):
-    return ItemOut(name=q, description="Item description", price=100.00, items=None)
+    return ItemOut(name=q, description="Item description", price=100.00)

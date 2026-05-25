@@ -21,7 +21,7 @@ def test_create_item(client):
 
 
 def test_get_items_pagination_meta(client):
-    response = client.get("/items", params={"page": 2, "page_size": 10})
+    response = client.get("/items/v1", params={"page": 2, "page_size": 10})
     assert response.status_code == 200
     body = response.json()
     assert body["code"] == 0
@@ -53,3 +53,20 @@ def test_path_page2_validation_error(client):
     assert body["code"] == 422
     assert body["msg"] == "page: Invalid page pattern 12"
     assert body["data"] is None
+
+
+def test_response_strips_none_fields_from_data(client):
+    response = client.get("/items/v2/1")
+    assert response.status_code == 200
+    body = response.json()
+    assert "q" not in body["data"]
+    assert body["data"]["item"]["name"] == "Item 1"
+
+
+def test_response_strips_unset_optional_fields(client):
+    response = client.get("/items/query7/q", params={"q": "test"})
+    assert response.status_code == 200
+    body = response.json()
+    assert "items" not in body["data"]
+    assert body["data"]["name"] == "test"
+

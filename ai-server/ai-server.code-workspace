@@ -1,8 +1,10 @@
 {
   "folders": [
     {
-      "path": ".",
-      "name": "ai-server"
+      "path": "."
+    },
+    {
+      "path": "../../frontend-lab/html-css"
     }
   ],
   "settings": {

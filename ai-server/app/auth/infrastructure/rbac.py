@@ -4,7 +4,7 @@ from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.auth.models import Permission, Role, User, UserRole
+from app.auth.infrastructure.models import Permission, Role, User, UserRole
 
 
 async def get_user_by_username(session: AsyncSession, username: str) -> User | None:

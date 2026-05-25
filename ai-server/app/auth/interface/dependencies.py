@@ -4,13 +4,17 @@ from collections.abc import Callable
 from typing import Any
 
 from fastapi import Depends, HTTPException, Request, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth.rbac import get_user_by_username, user_permission_codes, user_role_codes
-from app.auth.schemas import UserRead
-from app.auth.security import decode_access_token, verify_password
-from app.auth.service import AuthorizationService
+from app.auth.application.authorization_service import AuthorizationService
+from app.auth.infrastructure.rbac import (
+    get_user_by_username,
+    user_permission_codes,
+    user_role_codes,
+)
+from app.auth.infrastructure.security import decode_access_token, verify_password
+from app.auth.interface.schemas import UserRead
 from app.db.session import get_db_session
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")

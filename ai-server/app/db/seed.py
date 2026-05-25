@@ -7,17 +7,16 @@ import asyncio
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from app.auth.models import (
+from app.auth.domain.value_objects import AclEffect, SubjectType
+from app.auth.infrastructure.models import (
     AclEntry,
-    AclEffect,
     Permission,
     Role,
     RolePermission,
-    SubjectType,
     User,
     UserRole,
 )
-from app.auth.security import hash_password
+from app.auth.infrastructure.security import hash_password
 from app.db.session import close_db_engine, get_session_factory
 
 

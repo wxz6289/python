@@ -36,6 +36,18 @@ TORTOISE_ORM = {
             "default_connection": "default",
         },
     },
+    "use_tz": True,
+    "timezone": "UTC",
+    "db_pool": {
+        "max_size": 10,
+        "min_size": 1,
+        "max_overflow": 2,
+        "idle_timeout": 30,
+        "timeout": 30,
+        "pool_recycle": 3600,
+        "pool_pre_ping": True,
+        "pool_pre_ping_timeout": 10,
+    },
 }
 
 

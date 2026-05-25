@@ -3,7 +3,7 @@ from __future__ import annotations
 from contextvars import ContextVar, Token
 from typing import Any, Generic, TypeVar
 
-from pydantic import BaseModel
+from pydantic import BaseModel, model_serializer
 from starlette.requests import Request
 
 T = TypeVar("T")
@@ -18,6 +18,17 @@ class ResponseMeta(BaseModel):
     total_pages: int | None = None
 
 
+def normalize_response_data(payload: Any) -> Any:
+    if isinstance(payload, BaseModel):
+        return payload.model_dump(mode="json")
+    if isinstance(payload, list):
+        return [
+            item.model_dump(mode="json") if isinstance(item, BaseModel) else item
+            for item in payload
+        ]
+    return payload
+
+
 class ApiResponse(BaseModel, Generic[T]):
     code: int = 0
     msg: str = "success"
@@ -28,11 +39,15 @@ class ApiResponse(BaseModel, Generic[T]):
         payload: dict[str, Any] = {
             "code": self.code,
             "msg": self.msg,
-            "data": self.data,
+            "data": normalize_response_data(self.data),
         }
         if self.meta is not None:
             payload["meta"] = self.meta.model_dump(mode="json")
         return payload
+
+    @model_serializer(mode="plain")
+    def _serialize(self) -> dict[str, Any]:
+        return self.serialize_model()
 
 
 def _resolve_request(request: Request | None = None) -> Request | None:

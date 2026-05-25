@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from datetime import datetime
-from enum import Enum
 
 from sqlalchemy import (
     BigInteger,
@@ -11,23 +10,13 @@ from sqlalchemy import (
     Integer,
     JSON,
     String,
-    Text,
     UniqueConstraint,
     func,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.auth.domain.value_objects import AclEffect, SubjectType
 from app.db.base import Base
-
-
-class SubjectType(str, Enum):
-    USER = "user"
-    ROLE = "role"
-
-
-class AclEffect(str, Enum):
-    ALLOW = "allow"
-    DENY = "deny"
 
 
 class User(Base):

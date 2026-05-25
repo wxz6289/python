@@ -4,7 +4,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 os.environ.setdefault("DEEPSEEK_API_KEY", "test-key")
-os.environ.setdefault("DEEPSEEK_BASE_URL", "https://api.example.com/v1")
+os.environ.setdefault("DEEPSEEK_BASE_URL", "https://api.example.com")
 
 
 @pytest.fixture

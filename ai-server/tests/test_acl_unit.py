@@ -1,5 +1,6 @@
-from app.auth.acl import AuthContext, evaluate_acl_entries, match_conditions
-from app.auth.models import AclEffect, AclEntry, SubjectType
+from app.auth.domain.services import evaluate_acl_entries, match_conditions
+from app.auth.domain.value_objects import AclEffect, AuthContext, SubjectType
+from app.auth.infrastructure.models import AclEntry
 
 
 def test_match_owner_condition():

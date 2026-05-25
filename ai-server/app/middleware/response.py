@@ -4,7 +4,6 @@ import json
 from collections.abc import Callable
 from typing import Any
 
-from pydantic import BaseModel
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
@@ -14,10 +13,16 @@ from app.schemas.response import (
     bind_request,
     get_response_meta,
     get_response_msg,
+    normalize_response_data,
     unbind_request,
 )
 
-SKIP_PATH_PREFIXES = ("/docs", "/redoc", "/openapi.json")
+SKIP_PATH_PREFIXES = (
+    "/docs",
+    "/redoc",
+    "/openapi.json",
+    "/.well-known",
+)
 
 
 def _should_skip(request: Request, response: Response) -> bool:
@@ -32,17 +37,6 @@ def _should_skip(request: Request, response: Response) -> bool:
 
 def _is_already_wrapped(payload: Any) -> bool:
     return isinstance(payload, dict) and "code" in payload and "msg" in payload
-
-
-def _normalize_data(payload: Any) -> Any:
-    if isinstance(payload, BaseModel):
-        return payload.model_dump(mode="json")
-    if isinstance(payload, list):
-        return [
-            item.model_dump(mode="json") if isinstance(item, BaseModel) else item
-            for item in payload
-        ]
-    return payload
 
 
 class UnifiedResponseMiddleware(BaseHTTPMiddleware):
@@ -70,7 +64,7 @@ class UnifiedResponseMiddleware(BaseHTTPMiddleware):
             wrapped: ApiResponse[Any] = ApiResponse(
                 code=0,
                 msg=get_response_msg(request),
-                data=_normalize_data(payload),
+                data=normalize_response_data(payload),
                 meta=get_response_meta(request),
             )
             headers = {

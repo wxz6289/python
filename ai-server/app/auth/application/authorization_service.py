@@ -6,9 +6,15 @@ from typing import Any
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth.acl import AuthContext, evaluate_acl_entries, fetch_acl_entries
-from app.auth.models import ChatSession, User
-from app.auth.rbac import get_user_by_id, user_has_permission, user_role_codes
+from app.auth.domain.services import evaluate_acl_entries
+from app.auth.domain.value_objects import AuthContext
+from app.auth.infrastructure.acl_repository import fetch_acl_entries
+from app.auth.infrastructure.models import ChatSession, User
+from app.auth.infrastructure.rbac import (
+    get_user_by_id,
+    user_has_permission,
+    user_role_codes,
+)
 
 
 class AuthorizationService:

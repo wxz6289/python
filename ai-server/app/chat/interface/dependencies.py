@@ -1,7 +1,7 @@
-from fastapi import Request
+from fastapi import Depends, Request
 
+from app.chat.infrastructure.master import Master
 from app.config import get_settings
-from app.services.master import Master
 
 
 def get_master(request: Request) -> Master:

@@ -1,7 +1,8 @@
 import pytest
 
-from app.auth.acl import AuthContext, match_conditions
-from app.auth.security import hash_password, verify_password
+from app.auth.domain.value_objects import AuthContext
+from app.auth.domain.services import match_conditions
+from app.auth.infrastructure.security import hash_password, verify_password
 
 
 def test_password_hash_roundtrip():

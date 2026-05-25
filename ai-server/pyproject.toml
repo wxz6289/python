@@ -5,7 +5,7 @@ description = "FastAPI + LangChain + Redis 命理对话服务"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "aerich>=0.8.1",
+    "aerich>=0.8.2",
     "aiofiles>=25.1.0",
     "aiomysql>=0.3.2",
     "asyncmy>=0.2.11",
@@ -75,6 +75,14 @@ ignore_missing_imports = true
 testpaths = ["tests"]
 pythonpath = ["."]
 asyncio_mode = "auto"
+
+[tool.uv.sources]
+# PyPI aerich caps tortoise-orm<1.0; dev branch supports tortoise 1.x.
+aerich = { git = "https://github.com/tortoise/aerich", branch = "dev" }
+
+[tool.uv]
+# Allow resolving aerich git source alongside tortoise-orm 1.x.
+override-dependencies = ["aerich"]
 
 [tool.aerich]
 tortoise_orm = "app.db.tortoise_config.TORTOISE_ORM"

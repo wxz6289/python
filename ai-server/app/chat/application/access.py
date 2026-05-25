@@ -1,12 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import Depends, HTTPException, Request, status
 
-from app.auth.dependencies import get_auth_service, get_current_user
-from app.auth.schemas import UserRead
-from app.auth.service import AuthorizationService
-from app.dependencies import get_master
-from app.services.master import Master
-
-router = APIRouter(tags=["chat"])
+from app.auth.application.authorization_service import AuthorizationService
+from app.auth.interface.dependencies import get_auth_service, get_current_user
+from app.auth.interface.schemas import UserRead
 
 
 async def prepare_chat_access(
@@ -46,15 +42,3 @@ async def prepare_chat_access(
         department=current_user.department,
     )
     return current_user
-
-
-@router.get("/chat")
-def chat(
-    query: str,
-    session_id: str = "default",
-    _: UserRead = Depends(prepare_chat_access),
-    master: Master = Depends(get_master),
-) -> dict[str, str]:
-    """命理对话接口。需 RBAC + ACL 授权。"""
-    reply = master.chat(query, session_id)
-    return {"reply": reply, "session_id": session_id}
