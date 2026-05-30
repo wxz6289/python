@@ -1,0 +1,3 @@
+[submodule "LlamaIndex"]
+	path = LlamaIndex
+	url = git@github.com:wxz6289/LlamaIndex.git
