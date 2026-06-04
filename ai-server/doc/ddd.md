@@ -102,8 +102,8 @@
 ```
 
 - `app/auth/`：用户、角色、权限、ACL、ChatSession —— 一个上下文内的模型
-- `app/services/master.py`：LLM 对话 —— 另一个上下文
-- `app/routers/items.py`：演示用商品 —— 可与真实「商品域」分离
+- `app/chat/infrastructure/master.py`：LLM 对话 —— Chat 上下文基础设施
+- `app/catalog/`：演示用商品 —— Catalog 限界上下文
 
 **规则**：一个聚合只属于一个限界上下文；跨上下文通过 **ID 引用** 或 **集成事件**，不要共享同一个 ORM 实体类到处改。
 
@@ -280,10 +280,10 @@ class OrderFactory:
 
 | 层 | 职责 | 本仓库对应（现状 / 目标） |
 |----|------|---------------------------|
-| **接口层** | HTTP、DTO、鉴权入口 | `app/routers/`、`app/auth/dependencies.py` |
-| **应用层** | 用例编排、事务、DTO 转换 | `AuthorizationService`（部分应用+领域混合） |
-| **领域层** | 实体、值对象、领域服务、仓储接口 | `app/auth/acl.py`（部分）；可抽 `domain/` |
-| **基础设施层** | ORM、DB、Redis、LLM | `app/db/`、`app/auth/models.py`、`services/master.py` |
+| **接口层** | HTTP、DTO、鉴权入口 | `app/*/interface/`（如 `auth/interface/router.py`） |
+| **应用层** | 用例编排、事务、DTO 转换 | `app/auth/application/authorization_service.py` |
+| **领域层** | 实体、值对象、领域服务、仓储接口 | `app/auth/domain/` |
+| **基础设施层** | ORM、DB、Redis、LLM | `app/db/`、`app/auth/infrastructure/`、`app/chat/infrastructure/master.py` |
 
 依赖方向：**外层依赖内层**，领域层不依赖 FastAPI / SQLAlchemy。
 
@@ -329,21 +329,13 @@ Interface  →  Application  →  Domain  ←  Infrastructure
 
 ### 5.1 常见目录结构（演进路径）
 
-**阶段 1 — 按技术分层（本仓库现状）**
+**阶段 1 — 按技术分层（历史结构，已迁移）**
 
 ```
-app/
-├── routers/          # 接口
-├── auth/
-│   ├── models.py     # ORM
-│   ├── schemas.py    # Pydantic DTO
-│   ├── service.py    # 服务
-│   └── rbac.py       # 数据访问
-├── services/
-└── db/
+app/routers/ · app/services/ · 顶层 schemas/
 ```
 
-**阶段 2 — 按限界上下文 + 层**
+**阶段 2 — 按限界上下文 + 层（本仓库现状）**
 
 ```
 app/
@@ -457,10 +449,9 @@ async def get_auth_service(session: AsyncSession = Depends(get_db_session)):
 | 模块 | 上下文 | 现状 | 可演进方向 |
 |------|--------|------|------------|
 | `app/auth/` | Identity & Authorization | Service + ORM + ACL 纯函数 | 抽 `domain/`，仓储接口化 |
-| `app/routers/chat.py` | Chat | 路由 + `prepare_chat_access` + `Master` | Chat 聚合（Session、Message） |
-| `app/routers/items.py` | Catalog（演示） | 路由内 mock | 若业务化：Item 聚合 + 应用服务 |
-| `app/crud.py` | — | 贫血 CRUD | 按上下文拆入各域仓储 |
-| `app/schemas/` | 跨层 DTO | Pydantic 模型 | 保持，按上下文分子包 |
+| `app/chat/` | Chat | `interface/router` + `infrastructure/master` | Chat 聚合（Session、Message） |
+| `app/catalog/` | Catalog（演示） | `interface/router` + `schemas/item` | 若业务化：Item 聚合 + 应用服务 |
+| `app/schemas/` | 跨层 DTO | 统一响应、OpenAPI | 各上下文自有 `schemas/` 子包 |
 
 **已有良好实践**：
 

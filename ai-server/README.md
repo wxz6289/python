@@ -51,7 +51,7 @@ ai-server/
 
 - [uv](https://docs.astral.sh/uv/getting-started/installation/)（推荐）
 - Python 3.12+（uv 会自动按 `.python-version` 安装）
-- Redis（默认 `localhost:6380`，与 `REDIS_URL` 一致）
+- Redis（`docker compose up -d` 后默认 `127.0.0.1:6381`，见 `docker-compose.yml`；也可在 `.env` 覆盖 `REDIS_URL`）
 - DeepSeek API Key
 
 安装 uv（若尚未安装）：
@@ -85,6 +85,7 @@ uv sync --extra dev
 
 ```bash
 cp .env.example .env
+docker compose up -d   # 可选：启动 MySQL + Redis
 ```
 
 编辑 `.env`，至少填写：
@@ -93,7 +94,7 @@ cp .env.example .env
 |------|------|------|
 | `DEEPSEEK_API_KEY` | ✅ | DeepSeek API 密钥 |
 | `DEEPSEEK_BASE_URL` | ✅ | 如 `https://api.deepseek.com/v1` |
-| `REDIS_URL` | | 默认 `redis://localhost:6380/1` |
+| `REDIS_URL` | | 未设置时从 `docker-compose.yml` 解析（默认 `6381`） |
 | `REDIS_TTL_SECONDS` | | 会话 TTL，默认 7 天 |
 | `HOST` | | 默认 `127.0.0.1` |
 | `PORT` | | 默认 `8000` |
@@ -232,7 +233,7 @@ A: 执行 `uv sync` 或 `uv sync --extra dev`，不要直接用系统 Python 运
 A: 复制 `.env.example` 为 `.env` 并填写密钥。
 
 **Q: Redis 连接失败？**
-A: 确认 Redis 已启动且 `REDIS_URL` 正确（默认端口 `6380`）。
+A: 确认 Redis 已启动（`docker compose up -d`）且 `REDIS_URL` 与 compose 端口一致（默认 `6381`）。
 
 **Q: `/chat` 响应慢？**
 A: LLM 调用本身耗时；后续可改为 WebSocket 流式输出（见 [doc/fastapi-learning-plan.md](./doc/fastapi-learning-plan.md) Day 3）。
@@ -241,6 +242,8 @@ A: LLM 调用本身耗时；后续可改为 WebSocket 流式输出（见 [doc/fa
 A: 将 Python 解释器设为 `ai-server/.venv/bin/python`（由 `uv sync` 创建）。
 
 ## 相关文档
+
+完整索引见 [doc/README.md](./doc/README.md)。
 
 - [FastAPI 核心内容](./doc/fastapi.md)
 - [FastAPI 3 天学习计划](./doc/fastapi-learning-plan.md)

@@ -357,4 +357,4 @@ uv run aerich inspectdb -t tortoise_notes
 | Tortoise 迁移说明 | [https://tortoise.github.io/migration.html](https://tortoise.github.io/migration.html) |
 | FastAPI + Tortoise 示例 | [https://tortoise.github.io/examples/fastapi](https://tortoise.github.io/examples/fastapi) |
 | 本仓库 Tortoise 配置 | `app/db/tortoise_config.py` |
-| 本仓库示例 API | `/tortoise/notes`（`app/routers/tortoise_demo.py`） |
+| 本仓库示例 API | `/tortoise/notes`（`app/demo/tortoise_demo.py`） |

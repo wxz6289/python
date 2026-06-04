@@ -473,29 +473,25 @@ settings = Settings()
 
 ```
 ai-server/
-├── main.py                 # 入口：创建 app、挂载路由
-├── pyproject.toml
-├── .env
+├── main.py                      # 开发启动入口
 ├── app/
-│   ├── __init__.py
-│   ├── main.py             # FastAPI 实例 + lifespan
-│   ├── config.py           # Settings
-│   ├── dependencies.py     # Depends 公共依赖
-│   ├── routers/
-│   │   ├── chat.py         # /chat 路由
-│   │   └── ws.py           # WebSocket
-│   ├── schemas/
-│   │   └── chat.py         # Pydantic 请求/响应模型
-│   ├── services/
-│   │   └── master.py       # LangChain 业务逻辑
-│   └── exceptions.py       # 自定义异常
+│   ├── main.py                  # create_app、lifespan、路由注册
+│   ├── config.py
+│   ├── chat/
+│   │   ├── interface/router.py  # /chat
+│   │   ├── interface/dependencies.py
+│   │   ├── interface/schemas.py
+│   │   └── infrastructure/master.py
+│   ├── catalog/interface/router.py
+│   ├── auth/interface/          # 登录、权限
+│   ├── demo/ws.py               # WebSocket 学习示例
+│   └── middleware/
+├── demo/main.py                 # 独立最小示例
 ├── tests/
-│   └── test_chat.py
 └── doc/
-    └── fastapi.md
 ```
 
-原则：**路由薄、服务厚、模型清晰、依赖可测**。
+原则：**路由薄、领域/infrastructure 厚、模型清晰、依赖可测**。详见 [doc/README.md](./README.md)。
 
 ---
 
@@ -557,22 +553,22 @@ uv run gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker
 
 ```
 GET /chat?query=...&session_id=...
-  → routers/chat.py
+  → app/chat/interface/router.py
   → Depends(get_master) → app.state.master（lifespan 初始化）
   → Master.chat()（LangChain + Redis）
   → PlainTextResponse
 
 POST /items
-  → routers/items.py → Pydantic 校验
+  → app/catalog/interface/router.py → Pydantic 校验
 
 WS /ws
-  → echo 回显（尚未接入 LLM）
+  → app/demo/ws.py（echo，尚未接入 LLM）
 
 GET /health
-  → {"status": "ok"}
+  → app/system/interface/router.py
 ```
 
-目录结构：`app/main.py` · `routers/` · `services/master.py` · `schemas/` · `config.py` · `dependencies.py`
+目录结构：`app/main.py` · `app/{auth,chat,catalog,system}/` · `app/demo/` · `config.py`
 
 技术栈：`FastAPI` · `Uvicorn` · `LangChain` · `Redis` · `pydantic-settings` · **uv**
 

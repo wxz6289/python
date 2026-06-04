@@ -22,9 +22,9 @@ Day 3  进阶 ──► WebSocket / 流式 / 测试 / 部署，达到可演示�
 
 | 天 | 主题 | 核心技能 | 对照 ai-server |
 |----|------|----------|----------------|
-| **Day 1** | 基础入门 | 路由 · Pydantic · OpenAPI | `routers/chat.py`、`schemas/`、`/docs` |
-| **Day 2** | 工程化 | Depends · 中间件 · 异步 · 结构 | `dependencies.py`、`config.py`、`app/main.py` |
-| **Day 3** | 进阶交付 | WebSocket · 流式 · 测试 · 部署 | `routers/ws.py`、`tests/`、uvicorn 生产启动 |
+| **Day 1** | 基础入门 | 路由 · Pydantic · OpenAPI | `app/chat/interface/router.py`、`/docs` |
+| **Day 2** | 工程化 | Depends · 中间件 · 异步 · 结构 | `app/chat/interface/dependencies.py`、`config.py`、`app/main.py` |
+| **Day 3** | 进阶交付 | WebSocket · 流式 · 测试 · 部署 | `app/demo/ws.py`、`tests/`、uvicorn 生产启动 |
 
 ---
 
@@ -50,8 +50,8 @@ uv run python main.py
 | 文件 | 关注点 |
 |------|--------|
 | `app/main.py` | `FastAPI` 实例、`lifespan`、`include_router` |
-| `app/routers/chat.py` | `GET /chat`、查询参数、`Depends(get_master)` |
-| `app/services/master.py` | LangChain + Redis（业务层，Day 1 可略读） |
+| `app/chat/interface/router.py` | `GET /chat`、查询参数、`Depends(get_master)` |
+| `app/chat/infrastructure/master.py` | LangChain + Redis（业务层，Day 1 可略读） |
 
 ---
 
@@ -92,7 +92,7 @@ uv run python main.py
 | **阅读** | [fastapi.md §3 最小应用](./fastapi.md#3-最小应用) |
 | **学习目标** | 会在 Swagger UI 里填参数、发请求、看响应与状态码 |
 | **动手** | 在 `/docs` 中调用 `GET /chat`，观察 `query`、`session_id` 参数说明 |
-| **对照代码** | `app/routers/chat.py`：`response_class=PlainTextResponse` 为何在文档里显示为 text |
+| **对照代码** | `app/chat/interface/router.py`：`response_class=PlainTextResponse` 为何在文档里显示为 text |
 | **自测** | `session_id` 不传时默认值是什么？在 OpenAPI 里哪里能看到？ |
 
 #### 1.1.3 路由与 HTTP 方法（30 min）
@@ -102,7 +102,7 @@ uv run python main.py
 | **阅读** | [fastapi.md §4 路由与 HTTP 方法](./fastapi.md#4-路由与-http-方法) |
 | **学习目标** | 区分路径参数、查询参数、请求体；掌握 `@router.get` / `post` |
 | **动手** | 用 curl 调用 `/chat` 与 `/items`（POST JSON） |
-| **对照代码** | `app/routers/items.py` + `app/schemas/item.py` |
+| **对照代码** | `app/catalog/interface/router.py` + `app/catalog/schemas/item.py` |
 | **练习命令** | 见下方「Day 1 命令速查」 |
 
 ---
@@ -116,9 +116,9 @@ uv run python main.py
 | **阅读** | [fastapi.md §5 Pydantic 模型](./fastapi.md#5-pydantic-模型核心) |
 | **学习目标** | 会用 `BaseModel`、`Field`；理解 422 校验错误结构 |
 | **概念要点** | `min_length`、默认值、`description` 如何进入 OpenAPI |
-| **动手 1** | 阅读 `app/schemas/chat.py` 中的 `ChatQuery` |
+| **动手 1** | 阅读 `app/chat/interface/schemas.py` 中的 `ChatQuery` |
 | **动手 2** | 为 `ChatQuery` 增加 `max_length=2000`，故意传超长 `query`，观察 422 响应体 |
-| **动手 3** | 对照 `app/schemas/item.py`，给 `price` 传负数，确认 422 |
+| **动手 3** | 对照 `app/catalog/schemas/item.py`，给 `price` 传负数，确认 422 |
 
 #### 1.2.2 响应模型与 HTTPException（45 min）
 
@@ -168,7 +168,7 @@ curl -X POST http://127.0.0.1:8000/items \
 | 产出 | 说明 |
 |------|------|
 | 理解文档 | 能对照 `openapi.json` 找到 `/chat` 的参数定义 |
-| 代码（建议） | `POST /chat` 使用 `ChatQuery`；或完善 `schemas/chat.py` 的 `ChatResponse` |
+| 代码（建议） | `POST /chat` 使用 `ChatQuery`；或完善 `app/chat/interface/schemas.py` 的 `ChatResponse` |
 | 笔记 | 记录 422 与 400 在本项目中的区别（items vs chat） |
 
 ### Day 1 验收标准
@@ -192,7 +192,7 @@ curl -X POST http://127.0.0.1:8000/items \
 
 **预计用时**：3.5～4 小时
 
-> **说明**：本仓库已完成模块化拆分（`routers/`、`services/`、`config.py`）。Day 2 以**阅读 + 小步增强**为主，不必从零重构。
+> **说明**：本仓库已按限界上下文拆分（`auth/`、`chat/`、`catalog/` 等）。Day 2 以**阅读 + 小步增强**为主，不必从零重构。
 
 ---
 
@@ -204,7 +204,7 @@ curl -X POST http://127.0.0.1:8000/items \
 |------|------|
 | **阅读** | [fastapi.md §6 依赖注入](./fastapi.md#6-依赖注入depends) |
 | **学习目标** | 理解 `Depends(get_master)` 的解析时机；yield 依赖用于资源释放 |
-| **对照代码** | `app/dependencies.py` → `app/routers/chat.py` |
+| **对照代码** | `app/chat/interface/dependencies.py` → `app/chat/interface/router.py` |
 | **概念要点** | `request.app.state.master` 与 `lifespan` 里初始化的关系 |
 | **动手** | 在 `get_master` 内加一行日志，请求 `/chat` 观察是否每次请求都打印 |
 | **自测** | `Depends` 与直接 `from app.services import master` 单例有何区别？ |
@@ -247,7 +247,7 @@ curl -X POST http://127.0.0.1:8000/items \
 |------|------|
 | **阅读** | [fastapi.md §10 异步 vs 同步](./fastapi.md#10-异步-vs-同步) |
 | **学习目标** | 为何 `chat` 用 `def` 而非 `async def`；线程池行为 |
-| **对照代码** | `app/routers/chat.py` 注释：阻塞调用在线程池执行 |
+| **对照代码** | `app/chat/interface/router.py` 注释：阻塞调用在线程池执行 |
 | **概念要点** | `master.chat()` 内部 `invoke` 阻塞；`async def` 里直接调用会卡死事件循环 |
 | **动手** | 临时把 `chat` 改成 `async def` 并保留同步 `master.chat()`，压测或观察延迟（理解即可，改回 `def`） |
 | **延伸阅读** | LangChain `ainvoke`（Day 3 或后续改进） |
@@ -259,7 +259,7 @@ curl -X POST http://127.0.0.1:8000/items \
 | **阅读** | [fastapi.md §15 项目结构](./fastapi.md#15-项目结构推荐)、§18 现状与改进 |
 | **学习目标** | 能向他人画出请求链路：Router → Depends → Service |
 | **动手** | 画一张 ASCII 图：从 `GET /chat` 到 Redis 的调用链 |
-| **验收** | 不看文档也能说出 `schemas/`、`routers/`、`services/` 各放什么 |
+| **验收** | 不看文档也能说出各上下文的 `interface/`、`infrastructure/`、`schemas/` 各放什么 |
 
 ---
 
@@ -303,7 +303,7 @@ curl -X POST http://127.0.0.1:8000/items \
 |------|------|
 | **阅读** | [fastapi.md §11 WebSocket](./fastapi.md#11-websocket) |
 | **学习目标** | `accept` / `receive_text` / `send_text` / `WebSocketDisconnect` |
-| **对照代码** | `app/routers/ws.py`：当前为 echo |
+| **对照代码** | `app/demo/ws.py`：当前为 echo |
 | **动手** | 用浏览器控制台或 `websocat` 连接 `ws://127.0.0.1:8000/ws` 发消息 |
 | **协议约定** | 定义 JSON 消息格式，例如 `{"query":"...","session_id":"ws-001"}` |
 
@@ -424,7 +424,7 @@ def test_chat_with_mock_master(client, monkeypatch):
 | 2 | Pydantic 校验 | 能触发并读懂 422 响应 |
 | 3 | 依赖注入 | 能解释 `get_master` 与 `lifespan` |
 | 4 | 异步边界 | 能说明 `def chat` vs `async def` 选型 |
-| 5 | 模块化 | 能定位 routers / services / schemas |
+| 5 | 模块化 | 能定位 chat/catalog/auth 各层的 interface 与 infrastructure |
 | 6 | 实时通信 | WS 或流式至少完成一种 |
 | 7 | 测试 | `pytest` 通过且含 chat 相关用例 |
 | 8 | 部署 | uvicorn 多 worker 或文档中的生产命令能跑通 |

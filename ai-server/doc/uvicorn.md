@@ -327,7 +327,7 @@ async def lifespan(app: FastAPI):
 
 ### 8.2 同步路由 `def` 与线程池
 
-`app/routers/chat.py` 使用同步 `def chat` + 阻塞 `master.chat()`：
+`app/chat/interface/router.py` 使用同步 `def chat` + 阻塞 `master.chat()`：
 
 - Starlette 将同步路由放到 **线程池** 执行
 - Uvicorn 事件循环可继续处理其他连接
@@ -336,7 +336,7 @@ async def lifespan(app: FastAPI):
 
 ### 8.3 WebSocket 与多 Worker
 
-`app/routers/ws.py` 的 WebSocket 连接会 **粘在某个 worker 进程** 上。
+`app/demo/ws.py` 的 WebSocket 连接会 **粘在某个 worker 进程** 上。
 
 | 部署 | 建议 |
 |------|------|

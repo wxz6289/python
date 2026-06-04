@@ -56,7 +56,7 @@ typeCheckingMode = "basic"
 python_version = "3.12"
 explicit_package_bases = true
 mypy_path = "."
-files = ["app", "main.py", "tests"]
+files = ["app", "demo", "main.py", "tests"]
 warn_unused_ignores = true
 
 [[tool.mypy.overrides]]

@@ -2,7 +2,7 @@
 
 FastAPI 的依赖注入系统由 **`Depends()`** 驱动：在路由函数签名中声明「需要什么」，框架在每次请求时自动解析、执行并注入结果。它把**鉴权、数据库会话、参数解析、业务服务组装**等横切逻辑从路由里抽离出来，使路由保持薄、逻辑可复用、可测试。
 
-相关文档：[FastAPI 核心内容](./fastapi.md) · 本仓库示例路由 [`app/routers/depend.py`](../app/routers/depend.py)
+相关文档：[FastAPI 核心内容](./fastapi.md) · 本仓库示例路由 [`app/demo/depend.py`](../app/demo/depend.py)
 
 ---
 
@@ -85,7 +85,7 @@ async def get_current_user(
     ...
 ```
 
-本仓库 [`app/auth/dependencies.py`](../app/auth/dependencies.py) 中的 `get_current_user`、`get_auth_service` 均属此类。
+本仓库 [`app/auth/interface/dependencies.py`](../app/auth/interface/dependencies.py) 中的 `get_current_user`、`get_auth_service` 均属此类。
 
 ### 3.2 类依赖
 
@@ -126,7 +126,7 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     async with session_factory() as session:
         yield session
 
-# app/auth/dependencies.py
+# app/auth/interface/dependencies.py
 async def get_auth_service(
     session: AsyncSession = Depends(get_db_session),
 ) -> AuthorizationService:
@@ -265,7 +265,7 @@ async def get_auth_service(
 
 ### 4.4 复用路由前置逻辑
 
-本仓库 [`app/routers/chat.py`](../app/routers/chat.py) 的 `prepare_chat_access`：在对话前完成 ACL 校验 + 会话初始化，路由只声明依赖、不使用返回值：
+本仓库 [`app/chat/interface/router.py`](../app/chat/interface/router.py) 的 `prepare_chat_access`：在对话前完成 ACL 校验 + 会话初始化，路由只声明依赖、不使用返回值：
 
 ```python
 async def prepare_chat_access(
@@ -294,7 +294,7 @@ def chat(
 ### 4.5 从 `app.state` 获取应用级单例
 
 ```python
-# app/dependencies.py
+# app/chat/interface/dependencies.py
 def get_master(request: Request) -> Master:
     master = request.app.state.master
     if master is None:
@@ -445,7 +445,7 @@ app.dependency_overrides.clear()
 
 | 实践 | 说明 |
 |------|------|
-| **依赖放独立模块** | 如 `app/auth/dependencies.py`、`app/db/session.py`，不要堆在路由文件里 |
+| **依赖放独立模块** | 如 `app/auth/interface/dependencies.py`、`app/db/session.py`，不要堆在路由文件里 |
 | **路由保持薄** | 路由只做参数接收 + 调用 service + 返回；鉴权/DB/组装放依赖 |
 | **yield 管理资源** | DB session、文件句柄、临时连接用 generator 依赖 |
 | **子依赖传递** | Service 依赖 session，而不是在 service 内部自己创建 session |
@@ -490,16 +490,16 @@ app.dependency_overrides.clear()
 
 ```
 app/
-├── dependencies.py              # get_master（app.state）
-├── db/
-│   └── session.py               # get_db_session（yield）
-├── auth/
+├── chat/interface/
+│   ├── dependencies.py          # get_master（app.state）
+│   └── router.py                # /chat、prepare_chat_access
+├── auth/interface/
 │   └── dependencies.py          # oauth2_scheme, get_current_user,
 │                                # get_auth_service, require_permission
-└── routers/
-    ├── depend.py                # 学习用：Query 封装为依赖
-    ├── auth.py                  # login / me / permissions
-    └── chat.py                  # prepare_chat_access 前置依赖
+├── db/
+│   └── session.py               # get_db_session（yield）
+└── demo/
+    └── depend.py                # 学习用：Query 封装为依赖
 ```
 
 请求 `/chat` 时的依赖解析顺序示意：
@@ -565,4 +565,4 @@ async def read_me(current_user: CurrentUser) -> UserRead:
 3. **依赖工厂**处理参数化鉴权（`require_permission(...)`）  
 4. **`dependency_overrides`** 做测试隔离  
 
-结合本仓库：路由只负责 HTTP 边界，[`app/auth/dependencies.py`](../app/auth/dependencies.py) 负责身份与权限，[`app/db/session.py`](../app/db/session.py) 负责数据访问生命周期——这是 FastAPI 项目中依赖注入的典型分层方式。
+结合本仓库：路由只负责 HTTP 边界，[`app/auth/interface/dependencies.py`](../app/auth/interface/dependencies.py) 负责身份与权限，[`app/db/session.py`](../app/db/session.py) 负责数据访问生命周期——这是 FastAPI 项目中依赖注入的典型分层方式。
