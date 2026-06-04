@@ -1,3 +1,9 @@
 [submodule "LlamaIndex"]
 	path = LlamaIndex
 	url = git@github.com:wxz6289/LlamaIndex.git
+[submodule "tiny_python_projects"]
+	path = tiny_python_projects
+	url = git@github.com:wxz6289/tiny_python_projects.git
+[submodule "web-claw/scrapybook-2nd-edition"]
+	path = web-claw/scrapybook-2nd-edition
+	url = git@github.com:wxz6289/scrapybook-2nd-edition.git

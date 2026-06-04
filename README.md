@@ -11,8 +11,8 @@
 | [LlamaIndex](./LlamaIndex/) | LlamaIndex 示例（**git submodule**） | [README](./LlamaIndex/README.md) · [`LlamaIndex.code-workspace`](./LlamaIndex/LlamaIndex.code-workspace) |
 | [data-analysis](./data-analysis/) | 数据分析（如 pandas-for-everyone） | 各子目录 README |
 | [deep-learning](./deep-learning/) | 深度学习相关笔记与代码 | — |
-| [tiny_python_projects](./tiny_python_projects/) | 《Tiny Python Projects》练习 | 子目录 README |
-| [web-claw](./web-claw/) | 爬虫与 Web 相关（含 scrapybook） | — |
+| [tiny_python_projects](./tiny_python_projects/) | 《Tiny Python Projects》练习（**git submodule**） | [README](./tiny_python_projects/README.md) |
+| [web-claw](./web-claw/) | 爬虫与 Web 相关（含 scrapybook **submodule**） | [scrapybook-2nd-edition](./web-claw/scrapybook-2nd-edition/) |
 | [doc](./doc/) | 通用学习笔记 | — |
 | [scripts](./scripts/) | 仓库脚本（如 [git-hooks](./scripts/git-hooks/)） | — |
 
