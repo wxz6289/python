@@ -67,7 +67,7 @@ if __name__ == "__main__":
 |------|------|
 | `http://127.0.0.1:8000/` | 接口 |
 | `http://127.0.0.1:8000/docs` | Swagger UI（自动生成） |
-| `http://127.0.0.1:8000/redoc` | ReDoc 文档 |
+| `http://127.0.0.1:8000/redoc` | Scalar API 文档（`scalar-fastapi`，替代 ReDoc） |
 | `http://127.0.0.1:8000/openapi.json` | OpenAPI Schema |
 
 ---

@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI
 from fastapi.staticfiles import StaticFiles
+from starlette.responses import HTMLResponse
 
 
 def _make_lifespan(
@@ -38,6 +39,17 @@ def _make_lifespan(
             devtools.ensure_devtools_json()
 
     return lifespan
+
+
+def _register_scalar_docs(app: FastAPI) -> None:
+    from scalar_fastapi import get_scalar_api_reference
+
+    @app.get("/redoc", include_in_schema=False)
+    async def scalar_docs() -> HTMLResponse:
+        return get_scalar_api_reference(
+            openapi_url=app.openapi_url,
+            title=app.title,
+        )
 
 
 def _register_middlewares(app: FastAPI) -> None:
@@ -90,6 +102,7 @@ def create_app(
         title="ai-server",
         description="FastAPI + LangChain + Redis 对话服务（RBAC + ACL）",
         version="1.0.0",
+        redoc_url=None,
         dependencies=[Depends(request_logger)],
         lifespan=_make_lifespan(
             init_master=init_master,
@@ -97,6 +110,7 @@ def create_app(
             tortoise_enabled=tortoise_enabled,
         ),
     )
+    _register_scalar_docs(app)
     _register_middlewares(app)
     _register_routers(app)
     app.mount("/resources", StaticFiles(directory="resources"), name="resources")

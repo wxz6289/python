@@ -82,7 +82,7 @@ uv run python main.py
 | **阅读** | [fastapi.md §1 架构全景](./fastapi.md#1-架构全景) |
 | **学习目标** | 说清 FastAPI / Starlette / Pydantic / Uvicorn 各层职责 |
 | **概念要点** | ASGI 与 WSGI 区别；请求从 Uvicorn → Starlette → FastAPI 路由的流向 |
-| **动手** | 启动服务，依次访问 `/`、`/docs`、`/redoc`、`/openapi.json` |
+| **动手** | 启动服务，依次访问 `/`、`/docs`、`/redoc`（Scalar）、`/openapi.json` |
 | **自测** | 用一句话解释：为什么改 Pydantic 模型后 `/docs` 里的 Schema 会变？ |
 
 #### 1.1.2 OpenAPI 与 Swagger UI（45 min）

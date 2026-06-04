@@ -123,7 +123,7 @@ uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
 | 地址 | 说明 |
 |------|------|
 | <http://127.0.0.1:8000/docs> | Swagger UI |
-| <http://127.0.0.1:8000/redoc> | ReDoc |
+| <http://127.0.0.1:8000/redoc> | Scalar API 文档（替代 ReDoc） |
 | <http://127.0.0.1:8000/health> | 健康检查 |
 
 ## 常用 uv 命令
