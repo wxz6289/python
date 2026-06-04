@@ -8,7 +8,7 @@
 |------|------|------|
 | [ai-server](./ai-server/) | FastAPI + LangChain 命理对话服务（DDD 分层、Tortoise ORM） | [README](./ai-server/README.md) · `cd ai-server && uv run python main.py` |
 | [llm](./llm/) | LangChain / Agent / RAG 等编号示例脚本 | 在 `llm/` 下 `python NN-*.py` |
-| [LlamaIndex](./LlamaIndex/) | LlamaIndex 示例（**git submodule**） | 子模块内 README |
+| [LlamaIndex](./LlamaIndex/) | LlamaIndex 示例（**git submodule**） | [README](./LlamaIndex/README.md) · [`LlamaIndex.code-workspace`](./LlamaIndex/LlamaIndex.code-workspace) |
 | [data-analysis](./data-analysis/) | 数据分析（如 pandas-for-everyone） | 各子目录 README |
 | [deep-learning](./deep-learning/) | 深度学习相关笔记与代码 | — |
 | [tiny_python_projects](./tiny_python_projects/) | 《Tiny Python Projects》练习 | 子目录 README |
