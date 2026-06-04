@@ -1,0 +1,27 @@
+{
+  "executionEnvironments": [
+    {
+      "root": "ai-server",
+      "extraPaths": ["ai-server"],
+      "venvPath": "ai-server",
+      "venv": ".venv",
+      "pythonVersion": "3.12"
+    },
+    {
+      "root": "llm",
+      "extraPaths": ["llm"],
+      "venvPath": ".",
+      "venv": ".venv",
+      "pythonVersion": "3.12"
+    }
+  ],
+  "typeCheckingMode": "basic",
+  "exclude": [
+    "**/LlamaIndex/**",
+    "**/tiny_python_projects/**",
+    "**/web-claw/**",
+    "**/data-analysis/**",
+    "**/.venv/**",
+    "**/.mypy_cache/**"
+  ]
+}
