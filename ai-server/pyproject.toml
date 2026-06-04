@@ -41,11 +41,14 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["app"]
 
+[tool.hatch.build.targets.sdist]
+packages = ["app", "demo"]
+
 [tool.pyright]
 pythonVersion = "3.12"
 venvPath = "."
 venv = ".venv"
-include = ["app", "tests", "main.py"]
+include = ["app", "demo", "tests", "main.py"]
 extraPaths = ["."]
 typeCheckingMode = "basic"
 

@@ -20,27 +20,29 @@
 ```text
 ai-server/
 ├── app/
-│   ├── main.py              # FastAPI 实例、lifespan、路由挂载
-│   ├── config.py            # Settings（环境变量）
-│   ├── dependencies.py      # Depends 注入
-│   ├── routers/
-│   │   ├── chat.py          # GET /chat
-│   │   ├── items.py         # POST /items（Pydantic 示例）
-│   │   └── ws.py            # WS /ws
-│   ├── schemas/             # 请求/响应模型
-│   └── services/
-│       └── master.py        # LangChain 对话链
-├── doc/
-│   ├── fastapi.md              # FastAPI 核心概念与示例
-│   ├── fastapi-learning-plan.md # 3 天学习计划（按时段、验收、实战任务）
-│   ├── framework-comparison.md # 框架对比（FastAPI / Flask / Django / Spring / NestJS）
-│   └── uvicorn.md              # Uvicorn 核心内容与部署最佳实践
+│   ├── main.py                 # FastAPI 工厂、lifespan、路由与中间件注册
+│   ├── config.py               # Settings（环境变量）
+│   ├── handlers.py             # 全局异常处理
+│   ├── auth/                   # 认证与 RBAC/ACL（DDD 分层）
+│   ├── chat/                   # 命理对话（LangChain + Redis）
+│   ├── catalog/                # 商品示例 API
+│   ├── system/                 # 健康检查等系统接口
+│   ├── db/                     # SQLAlchemy + Tortoise ORM、迁移种子
+│   ├── demo/                   # FastAPI 学习示例路由（挂载到主应用）
+│   ├── middleware/             # 统一响应、清理等中间件
+│   ├── schemas/                # 通用响应与 OpenAPI 定制
+│   └── infra/                  # 组合根等基础设施
+├── demo/
+│   └── main.py                 # 独立最小 FastAPI 示例（不依赖 app 包）
+├── doc/                        # 学习与架构笔记（FastAPI、DDD、CQRS、ORM 等）
+├── migrations/                 # Aerich / Tortoise 迁移
 ├── tests/
-│   └── test_api.py
-├── main.py                  # 开发启动入口
+├── main.py                     # 开发启动入口（uvicorn --reload）
+├── docker-compose.yml          # 本地 MySQL + Redis
 ├── .env.example
 ├── pyproject.toml
-└── uv.lock                  # uv 锁文件（提交到 Git）
+├── uv.lock
+└── ai-server.code-workspace    # Cursor/VS Code 子项目工作区
 ```
 
 ## 快速开始
@@ -244,6 +246,10 @@ A: 将 Python 解释器设为 `ai-server/.venv/bin/python`（由 `uv sync` 创�
 - [FastAPI 3 天学习计划](./doc/fastapi-learning-plan.md)
 - [框架对比：FastAPI vs Flask / Django / Spring / NestJS](./doc/framework-comparison.md)
 - [Uvicorn 核心内容与最佳实践](./doc/uvicorn.md)
+- [领域驱动设计](./doc/ddd.md)
+- [CQRS 命令查询分离](./doc/cqrs.md)
+- [依赖注入](./doc/dependon.md)
+- [ORM 与 Aerich](./doc/orm.md) · [Aerich 迁移](./doc/aerich.md)
 - [FastAPI 官方文档](https://fastapi.tiangolo.com/)
 - [uv 官方文档](https://docs.astral.sh/uv/)
 
