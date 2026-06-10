@@ -1,57 +1,48 @@
-# 学习顺序
+# 学习进度
 
-- [x] 表达式
-- [x] 语句
-- [x] 数据类型
-- [x] 模块
-- [x] 类
-- [x] 异常
-- [ ] 序列
-- [x] 函数
-- [ ] 迭代器
-- [ ] 生成器
-- [ ] 协程
-- [ ] 上下文关器
+文档入口：[docs/README.md](docs/README.md)
 
-标准库学习
+## 语言核心
 
-- [x] sys
-- [x] os
-- [x] re
-- [ ] collections
-- [ ] csv
-- [ ] datetime
-- [ ] math
-- [ ] tempfile
-- [ ] itertools
-- [ ] functions
-- [ ] subprocess
-- [ ] logging
-- [ ] json
-- [ ] pickle
-- [ ] `__future__`
+- [x] 表达式与基础语法 → [01-basic-syntax.md](docs/01-basic-syntax.md)
+- [x] 语句与控制流 → [02-statements.md](docs/02-statements.md)
+- [x] 函数 → [03-functions.md](docs/03-functions.md)
+- [x] 异常 → [05-exceptions.md](docs/05-exceptions.md)
+- [x] 模块 → [06-modules.md](docs/06-modules.md)
+- [x] 文件 I/O → [07-file-io.md](docs/07-file-io.md)
+- [x] 数据结构（序列、列表、元组、字典、集合）→ [09-data-structures.md](docs/09-data-structures.md)
+- [x] 类与 OOP → [10-oop-iterators-generators.md](docs/10-oop-iterators-generators.md)
+- [x] 迭代器与生成器 → [10-oop-iterators-generators.md](docs/10-oop-iterators-generators.md)
+- [x] 上下文管理器 → [11-context-managers.md](docs/11-context-managers.md)
+- [ ] 协程 → [asyncio/asyncio.md](asyncio/asyncio.md)
 
-常用库学习
+## 标准库
 
-- [] numpy
-- [] matplotlib
-- [] asyncio
-- [] joblib
+- [x] sys / os → [topics/sys-os.md](docs/topics/sys-os.md)
+- [x] re → [topics/regex.md](docs/topics/regex.md)
+- [x] collections → [topics/collections.md](docs/topics/collections.md)
+- [x] datetime / random → [topics/time-random.md](docs/topics/time-random.md)
+- [x] math → [topics/math.md](docs/topics/math.md)
+- [ ] csv / itertools / subprocess / logging / pickle → [topics/stdlib-extra.md](docs/topics/stdlib-extra.md)
+- [ ] json（见 [07-file-io.md](docs/07-file-io.md)）
+- [ ] tempfile / `__future__`（见 [topics/stdlib-extra.md](docs/topics/stdlib-extra.md)）
 
-## 参考
+## 常用第三方库
 
-Keras
-Tensorflow
-PyTorch
-JAX
+- [ ] numpy
+- [ ] matplotlib
+- [ ] asyncio 实战（见 [asyncio/](asyncio/)）
+- [ ] joblib
 
-## Books
+## 参考书籍
 
-- Pandas数据分析
-- 流畅的Python
-- Python Cookbook中文版(第三版)
-- Python数据科学手册
-- 利用Python进行数据分析
+- 《流畅的 Python》
+- 《Python Cookbook》（第三版）
+- 《Python 数据科学手册》
+- 《利用 Python 进行数据分析》
 - From Python to Numpy
-- Python语言参考手册
-- Python开发者指南
+- 《Python 语言参考手册》
+
+## 深度学习框架（选读）
+
+Keras · TensorFlow · PyTorch · JAX

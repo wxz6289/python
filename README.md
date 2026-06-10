@@ -13,7 +13,8 @@
 | [deep-learning](./deep-learning/) | 深度学习相关笔记与代码 | — |
 | [tiny_python_projects](./tiny_python_projects/) | 《Tiny Python Projects》练习（**git submodule**） | [README](./tiny_python_projects/README.md) |
 | [web-claw](./web-claw/) | 爬虫与 Web 相关（含 scrapybook **submodule**） | [scrapybook-2nd-edition](./web-claw/scrapybook-2nd-edition/) |
-| [doc](./doc/) | 通用学习笔记 | — |
+| [python](./python/) | **Python 语言核心**：语法、标准库 Markdown 笔记 + Notebook | [README](./python/README.md) · [docs](python/docs/README.md) |
+| [doc](./doc/) | 工具链与 AI 相关笔记（uv、LangChain 等） | — |
 | [scripts](./scripts/) | 仓库脚本（如 [git-hooks](./scripts/git-hooks/)） | — |
 
 ## 推荐工作方式
@@ -24,7 +25,7 @@
 
 ## Python 语言备忘
 
-简单易用；高级数据结构；模块化；解释型；可扩展 C/C++。
+简单易用；高级数据结构；模块化；解释型；可扩展 C/C++/Rust。
 
 - 高级数据类型允许在单一语句中表述复杂操作；
 - 使用缩进，而不是括号实现代码块分组；
