@@ -7,3 +7,6 @@
 [submodule "web-claw/scrapybook-2nd-edition"]
 	path = web-claw/scrapybook-2nd-edition
 	url = git@github.com:wxz6289/scrapybook-2nd-edition.git
+[submodule "rag"]
+	path = rag
+	url = git@github.com:wxz6289/rag.git
